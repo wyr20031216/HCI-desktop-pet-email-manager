@@ -180,7 +180,7 @@ body.reduce-anim .pop.open{animation:none}
       <button class="pl-tile" data-pv="set"><span class="pl-ic" style="background:linear-gradient(145deg,#7e8ba0,#566274)">⚙</span><b>系统设置</b><span class="pl-d">提醒、显示与数据</span></button>
       <button class="pl-tile dash" id="tilePane"><span class="pl-ic" style="background:#fff;border:1px solid #cfe0f5;color:#2467c9">▤</span><b>完整面板</b><span class="pl-d">在任务窗格打开全部功能</span></button>
      </div>
-     <div class="pl-more" style="cursor:default">桌面常驻入口：单击桌宠随时打开 <span style="color:#9aa6b4">v2.1</span></div>
+     <div class="pl-more" style="cursor:default">桌面常驻入口：单击桌宠随时打开 <span style="color:#9aa6b4">v2.2</span></div>
     </section>
     <!-- L1 今日面板 -->
     <section class="pv" id="pv-today" aria-label="今日面板详情">
@@ -196,7 +196,7 @@ body.reduce-anim .pop.open{animation:none}
      <div class="pop-sec">临期任务 <span class="tag red">24 小时内</span></div>
      <div class="pop-card" id="popUrgentCard">
       <div class="task-top"><div class="task-name">小组报告：提交最终版本</div><span class="tag red">临期</span></div>
-      <div class="task-meta">今天 17:00 · Project Team · 剩余约 7 小时</div>
+      <div class="task-meta">截止 今天 17:00 · Project Team · 剩余约 7 小时</div>
       <div class="row-actions"><button class="btn soft" onclick="openTask('project')">查看任务</button><button class="btn" onclick="snooze()">稍后提醒</button><button class="btn primary" onclick="completeUrgent()">完成</button></div>
      </div>
      <div class="empty" id="popUrgentEmpty" style="display:none">暂无 24 小时内到期的任务</div>
@@ -253,7 +253,7 @@ body.reduce-anim .pop.open{animation:none}
      <div class="view-title"><h2>今日面板</h2><span class="tag green">实时状态</span></div><div class="subtle">周一，11 月 9 日 · 最近同步 09:42</div>
      <div class="stats"><div class="stat amber"><span>待确认</span><strong id="pendingCount">03</strong></div><div class="stat blue"><span>待处理</span><strong>08</strong></div><div class="stat purple"><span>等待条件</span><strong>02</strong></div><div class="stat green"><span>已完成</span><strong id="doneCount">12</strong></div></div>
      <div class="section-title">临期任务 <span class="tag red">未来 24 小时</span></div>
-     <div class="task-card" id="todayUrgent"><div class="task-top"><div class="task-name">小组报告：提交最终版本</div><span class="tag red">临期</span></div><div class="task-meta">今天 17:00 · Project Team</div><div class="row-actions"><button class="btn soft" onclick="openTask('project')">查看任务</button><button class="btn" onclick="snooze()">稍后提醒</button></div></div>
+     <div class="task-card" id="todayUrgent"><div class="task-top"><div class="task-name">小组报告：提交最终版本</div><span class="tag red">临期</span></div><div class="task-meta">截止 今天 17:00 · Project Team</div><div class="row-actions"><button class="btn soft" onclick="openTask('project')">查看任务</button><button class="btn" onclick="snooze()">稍后提醒</button></div></div>
      <div class="section-title">待确认事项 <button class="link" onclick="showView('tasks')">查看全部 →</button></div>
      <div class="task-card" id="todayAssignment"><div class="task-top"><div class="task-name">Assignment 2 – Submission reminder</div><span class="tag amber">待确认</span></div><div class="task-meta">确认截止日期与预计耗时 · Prof. Chen</div><div class="row-actions"><button class="btn primary" onclick="confirmTask()">确认任务</button><button class="btn" onclick="openTask('assignment')">查看依据</button></div></div>
      <div class="section-title">等待条件</div><div class="task-card"><div class="task-name">等待同学提供最终数据附件</div><div class="task-meta">下次检查：明天 10:00 · 保留截止风险提示</div></div>
@@ -274,7 +274,7 @@ body.reduce-anim .pop.open{animation:none}
      <div class="list-tabs" style="margin:15px 0 12px;gap:12px;flex-wrap:wrap"><button class="link" onclick="filterTasks('all')">全部</button><button class="link" onclick="filterTasks('pending')">待确认</button><button class="link" onclick="filterTasks('todo')">待处理</button><button class="link" onclick="filterTasks('waiting')">等待条件</button><button class="link" onclick="filterTasks('done')">已完成</button></div>
      <div id="taskList">
       <div class="task-card" data-status="pending"><div class="task-top"><div class="task-name">提交 Assignment 2</div><span class="tag amber">待确认</span></div><div class="task-meta">Prof. Chen · 11 月 15 日（日期精度）</div><div class="row-actions"><button class="btn primary" onclick="confirmTask()">确认</button><button class="btn" onclick="editTask()">编辑</button><button class="btn" onclick="selectMail('assignment')">原邮件</button></div></div>
-      <div class="task-card" data-status="todo" id="taskUrgentRow"><div class="task-top"><div class="task-name">小组报告：提交最终版本</div><span class="tag red" id="taskUrgentTag">临期</span></div><div class="task-meta">Project Team · 今天 17:00</div><div class="row-actions"><button class="btn" onclick="openTask('project')">查看</button><button class="btn" onclick="snooze()">稍后提醒</button><button class="btn primary" onclick="completeTask(this)">完成</button></div></div>
+      <div class="task-card" data-status="todo" id="taskUrgentRow"><div class="task-top"><div class="task-name">小组报告：提交最终版本</div><span class="tag red" id="taskUrgentTag">临期</span></div><div class="task-meta">截止 今天 17:00 · Project Team</div><div class="row-actions"><button class="btn" onclick="openTask('project')">查看</button><button class="btn" onclick="snooze()">稍后提醒</button><button class="btn primary" onclick="completeTask(this)">完成</button></div></div>
       <div class="task-card" data-status="waiting"><div class="task-top"><div class="task-name">等待同学提供最终数据附件</div><span class="tag purple">等待条件</span></div><div class="task-meta">等待组员提供文件 · 明天 10:00 检查</div><div class="row-actions"><button class="btn" onclick="toast('打开等待条件编辑')">修改检查时间</button><button class="btn" onclick="selectMail('project')">原邮件</button></div></div>
       <div class="task-card" data-status="todo"><div class="task-top"><div class="task-name">注册研究生研讨会</div><span class="tag blue">待处理</span></div><div class="task-meta">Data Science Office · 11 月 18 日</div><div class="row-actions"><button class="btn" onclick="selectMail('seminar')">查看邮件</button><button class="btn primary" onclick="completeTask(this)">完成</button></div></div>
      </div>
@@ -286,8 +286,8 @@ body.reduce-anim .pop.open{animation:none}
      <div class="section-title">适用范围</div><div class="choice selected" onclick="chooseScope(this,'仅当前邮件')"><b>仅当前邮件</b><small>不创建可复用规则，仅修改当前邮件。</small></div><div class="choice" onclick="chooseScope(this,'同一发件人')"><b>同一发件人</b><small>完整邮箱地址匹配，不使用显示名称。</small></div><div class="choice" onclick="chooseScope(this,'同一项目')"><b>同一项目</b><small>只匹配用户显式添加的项目标签。</small></div>
      <div class="field"><label>项目标签（选择同一项目时使用）</label><select><option>未选择项目标签</option><option>课程：Data Mining</option><option>项目：小组报告</option></select></div>
      <button class="btn primary" onclick="previewRule()">预览影响范围 →</button>
-     <div id="rulePreview" style="display:none;margin-top:14px"><div class="panel-card"><div class="section-title" style="margin-top:0">影响范围预览 <span class="tag amber">待确认</span></div><div class="subtle">本地样本 · 近 30 天 · 42 封邮件（不是整个邮箱总量）</div><div class="status-line"><span>匹配条件</span><b id="scopeLabel">仅当前邮件</b></div><div class="status-line"><span>预计受影响</span><b id="impactCount">1 封</b></div><div class="evidence">修改前：重要 / 需要提示行动<br>修改后：普通 / 不提示行动</div><div class="mini-mail"><b>课程通知：期中安排</b><p>当前判断：待处理 → 修改后：普通</p></div><div class="subtle">默认只对未来匹配邮件生效；历史邮件批量重算需另行确认。</div><div class="row-actions"><button class="btn" onclick="document.getElementById('rulePreview').style.display='none'">返回修改</button><button class="btn primary" onclick="enableRule()">确认启用规则</button></div></div></div>
-     <div class="section-title">已启用规则</div><div class="task-card"><div class="task-name">课程通知降为普通优先级</div><div class="task-meta">发件人：office@university.edu · 版本 2 · 仅未来邮件</div><div class="row-actions"><button class="btn" onclick="toast('规则差异已展示，可选择撤销')">查看历史</button><button class="btn danger" onclick="toast('已暂停规则（原型状态）')">暂停 / 撤销</button></div></div>
+     <div id="rulePreview" style="display:none;margin-top:14px"><div class="panel-card"><div class="section-title" style="margin-top:0">影响范围预览 <span class="tag amber">待确认</span></div><div class="subtle">本地样本 · 近 30 天 · 42 封邮件（不是整个邮箱总量）</div><div class="status-line"><span>匹配条件</span><b id="scopeLabel">仅当前邮件</b></div><div class="status-line"><span>预计受影响</span><b id="impactCount">1 封</b></div><div class="evidence">修改前：重要 / 需要提示行动<br>修改后：普通 / 不提示行动</div><div class="mini-mail"><b>课程通知：期中安排</b><p>当前判断：待处理 → 修改后：普通</p></div><div class="subtle" id="ruleFutureNote">默认只对未来匹配邮件生效；历史邮件批量重算需另行确认。</div><div class="row-actions"><button class="btn" onclick="document.getElementById('rulePreview').style.display='none'">返回修改</button><button class="btn primary" id="ruleConfirmBtn" onclick="enableRule()">确认启用规则</button></div></div></div>
+     <div class="section-title">已启用规则</div><div class="task-card" id="ruleCard"><div class="task-top"><div class="task-name">课程通知降为普通优先级</div><span class="tag green" id="ruleStateTag">启用中</span></div><div class="task-meta">发件人：office@university.edu · 版本 2 · 仅未来邮件</div><div class="row-actions"><button class="btn" onclick="toast('规则差异已展示，可选择撤销')">查看历史</button><button class="btn" id="rulePauseBtn" onclick="toggleRulePause()">暂停规则</button><button class="btn danger" onclick="undoRuleVersion()">撤销本次修改</button></div></div>
     </section>
     <section class="view" id="view-validation">
      <div class="view-title"><h2>效果验证</h2><span class="tag green">固定测试集</span></div><div class="subtle">回放使用已保存的基础 AI 输出，不重新生成模型结果。</div>
@@ -391,7 +391,9 @@ const hlMails=[
  {id:'seminar',from:'Data Science Office',subj:'Seminar registration',tags:[['候选行动项','purple'],['日期待确认','amber']],why:['是否参加需要你判断','邮件未写明日期，不做猜测']},
  {id:'library',from:'Library Services',subj:'Book return notice',tags:[['行动项','blue'],['无明确日期','amber']],why:['图书即将到期','未定位到具体日期，建议补充']}];
 function renderMailPv(){$('hlList').innerHTML=hlMails.map(m=>'<div class="hl-mail" onclick="openTask(\''+m.id+'\')"><div class="hl-top"><div style="flex:1"><b style="font-size:12px">'+m.subj+'</b><div class="task-meta">'+m.from+' · AI 重要性：'+(m.urgent?'高':'中')+'</div></div>'+m.tags.map(t=>'<span class="tag '+t[1]+'">'+t[0]+'</span>').join('')+'</div><div class="hl-why">'+m.why.map(w=>'<span class="why'+(m.urgent?' red':'')+'">'+w+'</span>').join('')+'</div></div>').join('')}
-function completePopTask(btn,name){btn.disabled=true;btn.textContent='已完成';st.done++;$('doneCount').textContent=st.done;toast(name+' 已完成；未触发提醒已失效');refreshPet();petSuccess()}
+function completePopTask(btn,name){if(btn.dataset.done){st.done=Math.max(0,st.done-1);$('doneCount').textContent=st.done;delete btn.dataset.done;btn.classList.add('primary');btn.textContent='完成';refreshPet();toast(name+' 已恢复为待处理');return}
+ st.done++;$('doneCount').textContent=st.done;btn.dataset.done='1';btn.classList.remove('primary');btn.textContent='撤销完成';
+ toast(name+' 已完成；未触发提醒已失效。点「撤销完成」可恢复为待处理');refreshPet();petSuccess()}
 function renderTasksPv(){
  let h='';
  if(st.pending>0&&!st.assignDone)h+='<div class="tk-group">待确认</div><div class="pop-card"><div class="task-top"><div class="task-name">提交 Assignment 2</div><span class="tag amber">待确认</span></div><div class="task-meta">11 月 15 日 · Prof. Chen</div><div class="row-actions"><button class="btn primary" onclick="confirmTask()">确认</button><button class="btn" onclick="openTask(\'assignment\')">原邮件</button></div></div>';
@@ -518,29 +520,79 @@ function confirmTask(){if(st.pending>0)st.pending--;st.assignDone=true;
  refreshPet();petSuccess();
  toast('任务已确认，已加入待处理列表；相关未触发提醒保持待命');}
 function completeTask(btn){const c=btn.closest('.task-card');const tag=c.querySelector('.tag');
+ if(btn.dataset.done){const p=JSON.parse(btn.dataset.prev);
+  if(tag&&p.t){tag.textContent=p.t;tag.className=p.c}
+  st.done=Math.max(0,st.done-1);$('doneCount').textContent=st.done;delete btn.dataset.done;
+  btn.classList.add('primary');btn.textContent=p.b;
+  refreshActivePv();refreshPet();
+  toast('已恢复为待处理；原提醒已恢复待命');return}
+ btn.dataset.prev=JSON.stringify({t:tag?tag.textContent:'',c:tag?tag.className:'',b:btn.textContent});
  if(tag){tag.textContent='已完成';tag.className='tag green'}
- btn.disabled=true;btn.textContent='已完成';st.done++;
- $('doneCount').textContent=st.done;
+ btn.dataset.done='1';btn.classList.remove('primary');btn.textContent='撤销完成';
+ st.done++;$('doneCount').textContent=st.done;
  refreshActivePv();
  refreshPet();petSuccess();
- toast('任务已完成；未触发提醒已失效');}
+ toast('任务已完成；未触发提醒已失效。点「撤销完成」可恢复为待处理');}
 function completeUrgent(){if(st.urgent>0)st.urgent=0;st.done++;
  $('doneCount').textContent=st.done;
- const t=$('todayUrgent');t.innerHTML='<div class="task-top"><div class="task-name">小组报告：提交最终版本</div><span class="tag green">已完成</span></div><div class="task-meta">今天 17:00 前 · 用户已确认完成</div>';
+ const t=$('todayUrgent');t.innerHTML='<div class="task-top"><div class="task-name">小组报告：提交最终版本</div><span class="tag green">已完成</span></div><div class="task-meta">截止 今天 17:00 · 用户已确认完成；17:00 提醒已取消</div><div class="row-actions"><button class="btn" onclick="undoUrgent()">恢复为待处理</button></div>';
  const rt=$('taskUrgentTag');if(rt){rt.textContent='已完成';rt.className='tag green'}
  refreshActivePv();
  refreshPet();petSuccess();
- toast('临期任务已完成；今晚 17:00 的提醒已取消');}
-function snooze(){openModal('稍后提醒','选择下次提醒时间。稍后提醒是提醒属性，不会改变任务完成状态。<div class="field"><label>提醒时间</label><select><option>30 分钟后</option><option>今天 15:00</option><option>明天 09:00</option></select></div>',()=>toast('已安排稍后提醒；旧提醒将去重，不重复通知'))}
+ toast('临期任务已完成；今晚 17:00 的提醒已取消。可通过「恢复为待处理」撤销');}
+function undoUrgent(){st.urgent=1;st.done=Math.max(0,st.done-1);
+ $('doneCount').textContent=st.done;
+ $('todayUrgent').innerHTML='<div class="task-top"><div class="task-name">小组报告：提交最终版本</div><span class="tag red">临期</span></div><div class="task-meta">截止 今天 17:00 · Project Team</div><div class="row-actions"><button class="btn soft" onclick="openTask(\'project\')">查看任务</button><button class="btn" onclick="snooze()">稍后提醒</button></div>';
+ const r=$('taskUrgentRow');if(r){r.innerHTML='<div class="task-top"><div class="task-name">小组报告：提交最终版本</div><span class="tag red" id="taskUrgentTag">临期</span></div><div class="task-meta">截止 今天 17:00 · Project Team</div><div class="row-actions"><button class="btn" onclick="openTask(\'project\')">查看</button><button class="btn" onclick="snooze()">稍后提醒</button><button class="btn primary" onclick="completeTask(this)">完成</button></div>'}
+ refreshActivePv();
+ refreshPet();
+ toast('已恢复为待处理；截止 17:00 的提醒已恢复待命');}
+function snooze(){const u=st.urgent>0;
+ openModal('稍后提醒',(u?'<div class="evidence" style="margin:0 0 11px">任务：<b>小组报告：提交最终版本</b> · 截止时间：<b>今天 17:00</b><br>':'<div class="subtle" style="margin:0 0 11px">')+'稍后提醒只改变提醒时间，不改变任务完成状态。</div>'+
+ '<div class="field"><label>下次提醒时间</label><select id="snoozeSel" onchange="updSnoozeWarn()"><option value="30m">30 分钟后 · 今天 10:15（推荐）</option><option value="15:00">今天 15:00 · 截止前 2 小时</option>'+(u?'<option value="late">明天 09:00 · ⚠ 晚于截止时间</option>':'<option value="tmr">明天 09:00</option>')+'<option value="custom">自定义…（选择日期和时间）</option></select></div>'+
+ '<div class="field" id="snoozeCustom" style="display:none"><label>自定义日期与时刻</label><div style="display:flex;gap:8px"><input type="date" id="snzDate" value="2026-11-09" style="flex:1" onchange="updSnoozeWarn()"><input type="time" id="snzTime" value="14:00" style="flex:1" onchange="updSnoozeWarn()"></div></div>'+
+ (u?'<div id="snoozeWarn" style="display:none;background:#fdecec;border:1px solid #f3d3d3;color:#a13c3c;border-radius:8px;padding:9px 11px;font-size:11px;margin:2px 0 4px">⚠ 所选时间晚于任务截止时间（今天 17:00），可能错过处理窗口。</div>':''),
+ ()=>{const s=$('snoozeSel');let label;
+  if(s.value==='30m')label='今天 10:15';else if(s.value==='15:00')label='今天 15:00';else if(s.value==='late'||s.value==='tmr')label='明天 09:00';
+  else{const p=$('snzDate').value.split('-'),hm=$('snzTime').value;label=parseInt(p[1],10)+' 月 '+parseInt(p[2],10)+' 日 '+hm}
+  if(u&&$('snoozeWarn')&&$('snoozeWarn').style.display!=='none')openModal('再次确认','所选提醒时间 <b>'+label+'</b> 晚于任务截止时间（今天 17:00），可能错过及时处理的机会。<div class="evidence">任务：小组报告：提交最终版本 · 截止 今天 17:00</div>',()=>applySnooze(label));
+  else applySnooze(label)})}
+function updSnoozeWarn(){const s=$('snoozeSel');if(!s)return;
+ const cu=$('snoozeCustom');if(cu)cu.style.display=s.value==='custom'?'block':'none';
+ const w=$('snoozeWarn');if(!w)return;let late=s.value==='late';
+ if(s.value==='custom'){const d=$('snzDate').value,t=$('snzTime').value;late=d>'2026-11-09'||(d==='2026-11-09'&&t>'17:00')}
+ w.style.display=late?'block':'none'}
+function applySnooze(label){
+ if(st.urgent>0){
+  const m1=document.querySelector('#todayUrgent .task-meta');if(m1)m1.innerHTML='截止 今天 17:00 · Project Team · 下次提醒：<b>'+label+'</b> <button class="link" onclick="snooze()">修改</button>';
+  const m2=document.querySelector('#taskUrgentRow .task-meta');if(m2)m2.innerHTML='截止 今天 17:00 · Project Team · 下次提醒：<b>'+label+'</b> <button class="link" onclick="snooze()">修改</button> <button class="link" onclick="clearSnooze()">取消提醒</button>';
+  const m3=document.querySelector('#popUrgentCard .task-meta');if(m3)m3.textContent='截止 今天 17:00 · 剩余约 7 小时 · 下次提醒：'+label}
+ toast('已设置下次提醒：'+label+'；旧提醒已去重，不重复通知')}
+function clearSnooze(){
+ const m1=document.querySelector('#todayUrgent .task-meta');if(m1)m1.textContent='截止 今天 17:00 · Project Team';
+ const m2=document.querySelector('#taskUrgentRow .task-meta');if(m2)m2.textContent='截止 今天 17:00 · Project Team';
+ const m3=document.querySelector('#popUrgentCard .task-meta');if(m3)m3.textContent='截止 今天 17:00 · Project Team · 剩余约 7 小时';
+ toast('已取消下次提醒；截止时间保持不变')}
 function openTask(id){closePop();selectMail(id);showView('mail')}
-function editTask(){openModal('编辑任务','<div class="field"><label>任务标题</label><input value="提交 Assignment 2"></div><div class="field"><label>截止日期</label><input value="2026-11-15" type="date"></div><div class="field"><label>预计耗时（用户输入）</label><input placeholder="例如：2 小时"></div><div class="field"><label>提醒设置</label><select><option>截止前 1 天</option><option>截止前 2 小时</option><option>暂不提醒</option></select></div>',()=>toast('任务信息已保存（原型状态）'))}
+function editTask(){openModal('编辑任务','<div class="field"><label>任务标题</label><input value="提交 Assignment 2"></div><div class="field"><label>截止方式</label><select onchange="setDueMode(this)"><option value="all">全天任务（仅日期）</option><option value="time">指定时间（日期＋时刻）</option></select></div><div class="field"><label>截止日期</label><input value="2026-11-15" type="date"></div><div class="field" id="dueTimeRow" style="display:none"><label>截止时刻</label><input type="time" value="17:00"></div><div class="field"><label>预计耗时（用户输入）</label><input placeholder="例如：2 小时"></div><div class="field"><label>提醒设置</label><select><option>截止前 1 天</option><option>截止前 2 小时</option><option>暂不提醒</option></select></div><div class="evidence">提醒将依据：<b id="dueHint">11 月 15 日 · 全天（按当日 09:00 计算）</b></div>',()=>toast('任务信息已保存；提醒将按新截止时间重新计算'))}
+function setDueMode(sel){$('dueTimeRow').style.display=sel.value==='time'?'block':'none';$('dueHint').textContent=sel.value==='time'?'11 月 15 日 17:00 · 指定时刻（按此时刻计算提醒）':'11 月 15 日 · 全天（按当日 09:00 计算）'}
 function newTask(){openModal('手动创建任务','<div class="field"><label>任务标题</label><input placeholder="输入任务标题"></div><div class="field"><label>截止日期（可选）</label><input type="date"></div><div class="field"><label>关联邮件</label><select><option>不关联邮件</option><option>当前选中邮件</option></select></div>',()=>toast('已创建本地手动任务'))}
 
 /* ---------- 规则 / 验证 / 设置 ---------- */
 function openCorrection(){showView('rules');$('ruleField').focus()}
 function chooseScope(el,s){scope=s;document.querySelectorAll('.choice').forEach(x=>x.classList.remove('selected'));el.classList.add('selected')}
-function previewRule(){$('rulePreview').style.display='block';$('scopeLabel').textContent=scope;$('impactCount').textContent=scope==='仅当前邮件'?'1 封':scope==='同一发件人'?'6 封':'4 封';toast('预览已生成；尚未修改任何邮件')}
-function enableRule(){$('rulePreview').style.display='none';toast('规则已启用；默认仅作用于未来匹配邮件')}
+function previewRule(){$('rulePreview').style.display='block';$('scopeLabel').textContent=scope;$('impactCount').textContent=scope==='仅当前邮件'?'1 封':scope==='同一发件人'?'6 封':'4 封';
+ const only=scope==='仅当前邮件';
+ $('ruleConfirmBtn').textContent=only?'确认修改此邮件':'启用规则（仅未来邮件）';
+ $('ruleFutureNote').style.display=only?'none':'block';
+ toast(only?'预览已生成：仅修改当前这封邮件，不创建规则':'预览已生成；尚未修改任何邮件')}
+function enableRule(){$('rulePreview').style.display='none';
+ if(scope==='仅当前邮件')toast('已修改当前邮件：重要性 → 普通 / 不提示行动；未创建可复用规则');
+ else toast('规则已启用；默认仅作用于未来匹配邮件，历史邮件批量重算需另行确认')}
+function toggleRulePause(){const b=$('rulePauseBtn'),t=$('ruleStateTag');const resuming=b.textContent.indexOf('恢复')===0;
+ if(resuming){t.textContent='启用中';t.className='tag green';b.textContent='暂停规则';toast('规则已恢复启用：未来邮件继续按规则处理')}
+ else{t.textContent='已暂停';t.className='tag gray';b.textContent='恢复规则';toast('规则已暂停：未来邮件恢复原判断，可随时点「恢复规则」')}}
+function undoRuleVersion(){openModal('撤销本次修改','即将撤销 <b>版本 2：课程通知降为普通优先级</b>，规则回到 <b>版本 1</b>（保留 AI 原判断）。<div class="evidence">影响范围：同一发件人 office@university.edu 的未来邮件；已按版本 2 处理的邮件不做追溯变更。</div>',()=>{$('ruleStateTag').textContent='已撤销';$('ruleStateTag').className='tag gray';$('rulePauseBtn').style.display='none';toast('已撤销本次修改，回到版本 1；未来邮件按原判断处理')})}
 function replay(){toast('规则回放完成：8/10 正确，3 项改善，1 项退化')}
 function filterMails(q){document.querySelectorAll('#view-mail .mini-mail').forEach(x=>x.style.display=x.textContent.toLowerCase().includes(q.toLowerCase())?'block':'none')}
 function filterTasks(status){document.querySelectorAll('#taskList .task-card').forEach(x=>x.style.display=status==='all'||x.dataset.status===status?'block':'none')}

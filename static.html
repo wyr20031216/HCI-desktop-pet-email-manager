@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MailPet · Outlook AI 邮件助手加载项 · 静态展示版（无 JS）</title>
+<style>
+:root{--blue:#2563eb;--blue2:#eaf2ff;--ink:#172235;--muted:#718096;--line:#e4eaf1;--bg:#f4f7fb;--white:#fff;--green:#16845b;--greenbg:#e8f7f0;--amber:#b76e08;--amberbg:#fff4df;--red:#c44747;--redbg:#fdecec;--purple:#7556b5;--purplebg:#f1edfa;--shadow:0 12px 35px rgba(20,45,80,.13)}
+*{box-sizing:border-box}body{margin:0;background:#eef2f7;color:var(--ink);font:14px/1.45 "Segoe UI","Microsoft YaHei",Arial,sans-serif}
+/* ===== Outlook 模拟外壳（与交互版一致） ===== */
+.app{display:flex;flex-direction:column;background:#fff;overflow:hidden;border-radius:12px;border:1px solid #e0e6ee}.titlebar{height:54px;display:flex;align-items:center;gap:18px;padding:0 18px;border-bottom:1px solid var(--line);background:#fff}.outlook-mark{width:28px;height:28px;border-radius:6px;background:#0874c9;color:white;display:grid;place-items:center;font-weight:700;font-size:17px}.brand{font-weight:650;font-size:16px}.search{margin-left:28px;width:min(420px,34vw);height:32px;background:#f5f7fa;border:1px solid #e7ebf0;border-radius:7px;padding:6px 12px;color:#8793a3}.topright{margin-left:auto;color:#758195;display:flex;gap:22px}.toolbar{height:48px;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 22px;gap:25px;color:#536174;background:#fff}.toolbar .primary{color:#0874c9;font-weight:600}.addin-cmd{margin-left:auto;display:flex;align-items:center;gap:7px;height:34px;padding:0 13px;border:1px solid #cfe0f5;border-radius:8px;background:linear-gradient(#f4f9ff,#e9f2fd);color:#1d5fb0;font-weight:650;font-size:12px}.addin-cmd .mark{width:20px;height:20px;border-radius:6px;background:linear-gradient(145deg,#4b91ef,#2057bb);color:#fff;display:grid;place-items:center;font-size:12px}
+.workspace{display:flex;min-height:0;position:relative}.folders{width:198px;background:#f8fafd;border-right:1px solid var(--line);padding:18px 12px;flex-shrink:0}.folder-head{font-size:12px;color:#8b96a5;margin:5px 9px 12px}.folder{height:36px;display:flex;align-items:center;padding:0 10px;border-radius:6px;color:#59677a;margin:3px 0}.folder.active{background:#e8f1fc;color:#1267b1;font-weight:600}.count{margin-left:auto;font-size:11px;background:#e7eff9;border-radius:10px;padding:2px 7px}.mail-list{width:320px;border-right:1px solid var(--line);background:#fff;flex-shrink:0}.list-head{height:76px;padding:16px 18px 8px}.list-head h2{margin:0 0 9px;font-size:19px}.list-tabs{font-size:12px;color:#718096;display:flex;gap:20px}.list-tabs b{color:#1671c4;border-bottom:2px solid #1671c4;padding-bottom:7px}.mail-item{height:91px;padding:12px 17px;border-bottom:1px solid #edf0f4;position:relative}.mail-item.selected{background:#eaf3ff;border-left:3px solid #2675d1;padding-left:14px}.mail-sender{font-weight:650;font-size:12px}.mail-time{position:absolute;right:14px;top:13px;color:#8793a3;font-size:10px}.mail-subject{font-size:12px;margin-top:6px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mail-snippet{font-size:11px;color:#8190a2;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.reading{flex:1;min-width:280px;background:#fff;padding:22px 25px;overflow:auto;position:relative}.reading h1{font-size:20px;margin:0 0 14px}.sender-line{color:#718096;font-size:12px;margin-bottom:22px}.reading p{font-size:13px;line-height:1.9;max-width:700px}.reading .email-quote{margin-top:20px;padding:14px 16px;border-left:3px solid #8ab7ef;background:#f7faff;color:#4b5d73;max-width:700px}.reading .attachment{display:inline-flex;padding:9px 12px;border:1px solid var(--line);border-radius:7px;margin-top:18px;color:#536174;font-size:12px}
+/* ===== 桌宠五状态 ===== */
+.pet{position:relative;width:56px;height:56px;border:0;border-radius:50%;background:linear-gradient(145deg,#4b91ef,#2057bb);box-shadow:0 8px 20px #2459a044;color:#fff;font-size:22px;line-height:1;display:grid;place-items:center;user-select:none}.pet small{display:block;font-size:8px;font-weight:700;letter-spacing:1px}.pet .pet-badge{position:absolute;right:-3px;top:-3px;min-width:18px;height:18px;border-radius:9px;border:2px solid #fff;font-size:10px;font-weight:700;display:none;place-items:center;padding:0 4px;color:#fff}.pet[data-state="pending"] .pet-badge{display:grid;background:#f0a24b}.pet[data-state="urgent"] .pet-badge{display:grid;background:#ef5b62}.pet[data-state="urgent"]{box-shadow:0 8px 20px #2459a044,0 0 0 6px #ef5b6230}.pet[data-state="success"]{background:linear-gradient(145deg,#43c98f,#1e8f60)}.pet[data-state="dnd"]{background:linear-gradient(145deg,#a7b3c2,#78889b)}
+.pet-tip{background:#fff;border:1px solid var(--line);border-radius:9px;padding:8px 12px;box-shadow:var(--shadow);font-size:11px;color:#5f6d80;white-space:nowrap}
+.pet-menu{width:186px;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);padding:6px}.pet-menu button{display:block;width:100%;border:0;background:#fff;text-align:left;padding:9px;border-radius:6px;color:#4d5b6d;font-size:12px}.pet-menu button:first-child{background:#f2f6fc;color:#2467c9}.pet-menu hr{border:0;border-top:1px solid #eef1f5;margin:5px 4px}
+/* ===== 功能面板 ===== */
+.pop{width:380px;max-width:100%;background:#fff;border:1px solid #dfe6ef;border-radius:14px;box-shadow:0 22px 60px rgba(19,34,56,.14);display:flex;flex-direction:column;overflow:hidden}.pop-head{display:flex;align-items:flex-start;gap:10px;padding:14px 16px 12px;border-bottom:1px solid var(--line);background:#fbfcfe}.pop-head .spark{width:30px;height:30px;border-radius:9px;background:linear-gradient(145deg,#4b91ef,#2057bb);color:#fff;display:grid;place-items:center;font-size:15px;flex-shrink:0}.pop-title{font-weight:700;font-size:14px}.pop-date{font-size:10px;color:#8290a1;margin-top:3px}.pop-head .sync{margin-left:auto;font-size:10px;color:var(--green);background:var(--greenbg);padding:4px 8px;border-radius:20px;white-space:nowrap}.pop-close{border:0;background:transparent;color:#8a95a4;font-size:17px;line-height:1;padding:2px 4px}.pop-back{border:0;background:transparent;color:#8a95a4;font-size:19px;line-height:1;padding:2px 6px 2px 2px}
+.pop-body{padding:13px 16px 10px;overflow:auto;min-height:0}
+.pop-banner{display:flex;align-items:center;gap:8px;border-radius:9px;padding:9px 12px;font-size:12px;margin-bottom:12px}.pop-banner.urgent{background:var(--redbg);color:#a13c3c;border:1px solid #f3d3d3}.pop-banner.dnd{background:#eef1f5;color:#5d6b7d;border:1px solid #dfe4ec}.pop-banner.idle{background:var(--greenbg);color:var(--green);border:1px solid #d3ede2}
+.pop-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:13px}.pop-stat{border:1px solid var(--line);border-radius:9px;padding:9px 6px;text-align:center;background:#fff}.pop-stat b{display:block;font-size:19px}.pop-stat span{font-size:10px;color:#718096}.pop-stat.amber b{color:var(--amber)}.pop-stat.blue b{color:var(--blue)}.pop-stat.purple b{color:var(--purple)}.pop-stat.green b{color:var(--green)}
+.pop-sec{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;margin:12px 0 7px}.pop-card{border:1px solid var(--line);border-radius:10px;padding:11px 12px;margin-bottom:8px;background:#fff}.pop-card .task-top{display:flex;align-items:flex-start;gap:8px}.pop-card .task-name{font-weight:650;font-size:12px;flex:1}.pop-card .task-meta{font-size:10px;color:var(--muted);margin-top:5px}.pop-card .row-actions{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}.pop-wait{display:flex;align-items:center;gap:8px;border:1px dashed #dbe3ee;border-radius:10px;padding:9px 12px;font-size:11px;color:#5d6b7d;background:#fbfcfe}
+.tag{font-size:10px;border-radius:20px;padding:4px 8px;white-space:nowrap}.tag.amber{color:var(--amber);background:var(--amberbg)}.tag.blue{color:var(--blue);background:var(--blue2)}.tag.green{color:var(--green);background:var(--greenbg)}.tag.red{color:var(--red);background:var(--redbg)}.tag.purple{color:var(--purple);background:var(--purplebg)}.tag.gray{color:#5d6b7d;background:#eef1f5}
+.link{color:#216ac7;font-size:11px;border:0;background:none;padding:0}
+.btn{border:1px solid #d8e2ef;border-radius:6px;padding:7px 10px;background:#fff;color:#35618e;font-size:11px}.btn.primary{background:#246bd0;border-color:#246bd0;color:#fff}.btn.soft{background:#edf4ff;border-color:#e0ebfc;color:#2367bd}.btn.danger{color:#b84747;background:#fff;border-color:#f1d5d5}
+.pop-foot{display:flex;gap:8px;padding:11px 16px;border-top:1px solid var(--line);background:#fbfcfe}.pop-foot .btn{flex:1;text-align:center}.pop-hint{padding:7px 16px 9px;font-size:10px;color:#9aa6b4;background:#fbfcfe;border-top:1px dashed #e8edf3;text-align:center}
+.pl-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.pl-tile{position:relative;border:1px solid var(--line);border-radius:11px;padding:12px 12px 10px;background:#fff;text-align:left;display:flex;flex-direction:column;gap:6px}.pl-tile .pl-ic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-size:15px;color:#fff}.pl-tile b{font-size:12px;color:var(--ink)}.pl-tile span.pl-d{font-size:10px;color:#8290a1;line-height:1.5}.pl-tile .pl-badge{position:absolute;top:9px;right:9px;min-width:16px;height:16px;border-radius:8px;background:#f0a24b;color:#fff;font-size:9px;font-weight:700;display:grid;place-items:center;padding:0 4px}.pl-tile.t-urgent .pl-badge{background:#ef5b62}.pl-tile.on{border-color:#c3ccd8;background:#f4f6f9}.pl-tile.dash{border-style:dashed;background:#fbfcfe}.pl-more{margin-top:10px;border:1px dashed #dbe3ee;border-radius:9px;padding:9px 11px;font-size:10.5px;color:#5d6b7d;background:#fbfcfe;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.hl-mail{border:1px solid var(--line);border-radius:10px;padding:11px 12px;margin-bottom:8px}.hl-top{display:flex;align-items:flex-start;gap:8px}.hl-why{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.why{font-size:9.5px;border-radius:5px;padding:2px 7px;background:#f0f5fc;color:#4a6d9e;border:1px solid #e1ecfb}.why.red{background:var(--redbg);color:var(--red);border-color:#f3d3d3}
+.tk-group{font-size:11px;font-weight:700;color:#5d6b7d;margin:11px 0 6px}.tk-group:first-child{margin-top:2px}
+/* ===== 任务窗格 ===== */
+.sidebar{width:380px;max-width:100%;flex-shrink:0;border:1px solid #e4eaf1;border-radius:12px;background:#fff;display:flex;flex-direction:column;overflow:hidden}.side-head{height:57px;display:flex;align-items:center;padding:0 15px;border-bottom:1px solid var(--line);gap:9px;background:#fbfcfe;flex-shrink:0}.spark{width:27px;height:27px;border-radius:8px;background:linear-gradient(145deg,#4b91ef,#2057bb);color:#fff;display:grid;place-items:center;font-size:15px}.side-title{font-weight:700;font-size:14px}.side-sub{font-size:9px;color:#93a0af;margin-top:1px}.sync{margin-left:auto;font-size:10px;color:var(--green);background:var(--greenbg);padding:4px 8px;border-radius:20px}.close-side{border:0;background:transparent;color:#8a95a4;font-size:18px;margin-left:6px}
+.nav{display:flex;gap:2px;padding:8px 10px 0;border-bottom:1px solid var(--line);flex-shrink:0}.nav button{border:0;background:transparent;color:#778496;padding:9px 6px 11px;font-size:11px;border-bottom:2px solid transparent;flex:1}.nav button.active{color:#2168c8;border-color:#2876d7;font-weight:650}
+.side-content{padding:17px 17px 22px;overflow:auto}
+.view-title{display:flex;align-items:center;justify-content:space-between;margin:1px 0 5px}.view-title h2{font-size:19px;margin:0}.subtle{font-size:11px;color:var(--muted)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:17px 0 20px}.stat{border:1px solid var(--line);border-radius:9px;padding:12px;background:#fff}.stat strong{display:block;font-size:23px;margin-top:2px}.stat span{font-size:11px;color:#718096}.stat.amber strong{color:var(--amber)}.stat.blue strong{color:var(--blue)}.stat.purple strong{color:var(--purple)}.stat.green strong{color:var(--green)}
+.section-title{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:700;margin:18px 0 9px}
+.task-card,.panel-card{border:1px solid var(--line);border-radius:9px;padding:12px;margin-bottom:9px;background:#fff}.task-top{display:flex;align-items:flex-start;gap:8px}.task-name{font-weight:650;font-size:12px;flex:1}.task-meta{font-size:10px;color:var(--muted);margin-top:7px}.row-actions{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
+.mail-search{width:100%;height:34px;border:1px solid var(--line);border-radius:7px;padding:0 10px;margin:10px 0 12px;font-size:11px;color:#8793a3}.mini-mail{padding:10px;border:1px solid var(--line);border-radius:8px;margin-bottom:8px}.mini-mail.selected{border-color:#8db7ed;background:#f4f8ff}.mini-mail b{font-size:11px}.mini-mail p{font-size:10px;color:#8190a2;margin:4px 0 0}
+.field{margin:12px 0}.field label{display:block;font-size:10px;color:#718096;margin-bottom:5px}.field input,.field select{width:100%;border:1px solid #dfe6ee;border-radius:6px;padding:9px;font:12px inherit;color:var(--ink);background:#fff}
+.evidence{background:#f4f8ff;border:1px solid #e1ecfb;border-radius:8px;padding:11px;font-size:11px;line-height:1.7;color:#43566e}.evidence mark{background:#fff0b8;padding:1px 2px}
+.status-line{display:flex;justify-content:space-between;font-size:11px;margin:9px 0}.status-line b{font-size:11px}
+.progress{height:7px;border-radius:10px;background:#edf1f5;overflow:hidden;margin:7px 0 14px}.progress span{display:block;height:100%;border-radius:10px;background:#26966b}
+.setting-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #edf0f4}.setting-row b{font-size:12px}.setting-row small{display:block;color:#8290a1;font-size:10px;margin-top:3px}
+.toggle{width:36px;height:20px;border:0;border-radius:15px;background:#cbd3de;position:relative;flex-shrink:0}.toggle:after{content:"";position:absolute;width:14px;height:14px;left:3px;top:3px;background:#fff;border-radius:50%}.toggle.on{background:#3479d5}.toggle.on:after{left:19px}
+.choice{border:1px solid var(--line);border-radius:8px;padding:12px;margin:8px 0}.choice.selected{border-color:#6ca0e6;background:#f3f8ff}.choice b{font-size:12px}.choice small{display:block;color:#7c899a;font-size:10px;margin-top:4px}
+.empty{padding:20px 10px;text-align:center;color:#8190a2;font-size:11px;border:1px dashed #e2e8f0;border-radius:9px}
+.modal{width:480px;max-width:100%;background:#fff;border-radius:13px;box-shadow:0 24px 70px #13223833;padding:20px}.modal h3{margin:0 0 5px;font-size:17px}.modal .actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+.tray-chip{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 13px;border:1px solid #cfe0f5;border-radius:20px;background:#fff;box-shadow:var(--shadow);color:#1d5fb0;font-size:12px;font-weight:600}
+.toast{display:inline-block;background:#20334d;color:#fff;padding:10px 16px;border-radius:8px;font-size:12px;box-shadow:var(--shadow)}
+/* ===== 静态展示页版式 ===== */
+.doc{max-width:1280px;margin:0 auto;padding:28px 22px 70px}
+.doc-head{background:linear-gradient(135deg,#2057bb,#4b91ef);border-radius:14px;color:#fff;padding:26px 30px;margin-bottom:8px}.doc-head h1{margin:0 0 8px;font-size:22px}.doc-head p{margin:0;font-size:12.5px;opacity:.92;line-height:1.8}
+.sec{margin:38px 0 12px;font-size:16px;font-weight:700;color:#37465a;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}.sec small{font-size:11.5px;color:#98a1ad;font-weight:400}
+.card{background:#fff;border:1px solid #e4eaf1;border-radius:12px;padding:20px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:18px}
+.item-label{font-size:12px;font-weight:700;color:#5d6b7d;margin:0 0 10px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.item-label span{font-size:10px;color:#98a1ad;font-weight:400}
+.petcell{text-align:center}.petcell .pet{margin:0 auto}.petcell b{display:block;font-size:12px;margin-top:10px}.petcell span{display:block;font-size:10px;color:var(--muted);margin-top:3px;line-height:1.5}
+.center{display:flex;justify-content:center}
+.pane-active{display:block}
+.note-strip{border:1px solid #d9e6f7;background:#f4f9ff;border-radius:9px;padding:10px 14px;font-size:11.5px;color:#3c5878;line-height:1.7;margin-top:14px}
+@media(max-width:900px){.folders{display:none}.mail-list{width:240px}.reading{display:none}}
+</style>
+</head>
+<body>
+<div class="doc">
+
+<div class="doc-head">
+ <h1>MailPet · Outlook AI 邮件助手加载项 · 静态展示版</h1>
+ <p>纯静态 HTML（无 JavaScript）：把交互原型的全部功能与弹框状态平铺展示，便于评审、截图与文档引用。可交互版本见 <b>prototype.html</b>（单击桌宠打开功能宫格 → 详情）。设计规范见 Figma 风格设计稿 v2.1。</p>
+</div>
+
+<!-- ═══════════ 01 主界面总览 ═══════════ -->
+<div class="sec">01 · 主界面总览 <small>Outlook 宿主 + 桌宠（待确认态）+ 功能面板（宫格展开）+ 任务窗格（今日视图）</small></div>
+<div class="card" style="padding:0;overflow:hidden">
+ <div class="app" style="height:780px">
+  <header class="titlebar"><div class="outlook-mark">O</div><div class="brand">Outlook</div><div class="search">⌕　搜索邮件、人员和文件</div><div class="topright"><span>帮助</span><span>设置</span><span>账户　●</span></div></header>
+  <div class="toolbar"><span class="primary">＋ 新建邮件</span><span>删除</span><span>归档</span><span>标记为未读</span><span>移动到</span><span>筛选</span><button class="addin-cmd" title="显示 / 隐藏 MailPet 任务窗格（Outlook 加载项命令）"><span class="mark">✦</span>MailPet</button></div>
+  <main class="workspace">
+   <aside class="folders"><div class="folder-head">收藏夹</div><div class="folder active">▣　收件箱 <span class="count">12</span></div><div class="folder">✉　草稿</div><div class="folder">↗　已发送邮件</div><div class="folder">⌫　已删除邮件</div><div class="folder-head" style="margin-top:28px">文件夹</div><div class="folder">▸　课程</div><div class="folder">▸　项目协作</div><div class="folder">▸　订阅通知</div></aside>
+   <section class="mail-list"><div class="list-head"><h2>收件箱</h2><div class="list-tabs"><b>重点</b><span>其他</span><span style="margin-left:auto">筛选⌄</span></div></div>
+    <div class="mail-item selected"><span class="mail-sender">Prof. Chen</span><span class="mail-time">09:42</span><div class="mail-subject">Assignment 2 – Submission reminder</div><div class="mail-snippet">请在 11 月 15 日前提交作业…</div></div>
+    <div class="mail-item"><span class="mail-sender">Project Team</span><span class="mail-time">昨天</span><div class="mail-subject">Updated dataset for group report</div><div class="mail-snippet">附件已更新，请检查最终数据…</div></div>
+    <div class="mail-item"><span class="mail-sender">Data Science Office</span><span class="mail-time">周五</span><div class="mail-subject">Seminar registration</div><div class="mail-snippet">请确认是否参加下周研讨会…</div></div>
+    <div class="mail-item"><span class="mail-sender">Library Services</span><span class="mail-time">周四</span><div class="mail-subject">Book return notice</div><div class="mail-snippet">借阅书籍即将到期…</div></div>
+    <div class="mail-item"><span class="mail-sender">Teaching Assistant</span><span class="mail-time">周三</span><div class="mail-subject">Week 7 slides uploaded</div><div class="mail-snippet">本周课件已上传至课程平台…</div></div>
+   </section>
+   <section class="reading">
+    <h1>Assignment 2 – Submission reminder</h1><div class="sender-line">Chen Wei &lt;chen@university.edu&gt;　·　收件人：你　·　今天 09:42</div>
+    <p>Hi everyone,</p><p>Please submit Assignment 2 by November 15.<br>Make sure your report includes the analysis and references.</p>
+    <p>Best regards,<br>Chen Wei</p><div class="email-quote">“Please submit Assignment 2 by November 15.”</div>
+    <div class="attachment">▧　Assignment_2_Instructions.pdf　　查看附件（附件未分析）</div>
+
+    <!-- 桌宠：待确认状态（琥珀角标 3） -->
+    <div class="pet" data-state="pending" style="position:absolute;right:16px;bottom:20px" aria-label="MailPet 桌宠：3 项待确认，单击打开功能面板"><span>✦</span><small>AI</small><span class="pet-badge">3</span></div>
+
+    <!-- 功能面板：宫格展开（锚定桌宠右上方 16px） -->
+    <div class="pop" style="position:absolute;right:8px;bottom:88px;z-index:45" role="dialog" aria-label="MailPet 功能面板">
+     <div class="pop-head">
+      <div class="spark">✦</div>
+      <div><div class="pop-title">MailPet · 快捷功能</div><div class="pop-date">11 月 9 日 周一 · 最近同步 09:42</div></div>
+      <span class="sync">● 已同步</span>
+      <span class="pop-close" aria-hidden="true">×</span>
+     </div>
+     <div class="pop-body">
+      <div class="pl-grid">
+       <button class="pl-tile"><span class="pl-ic" style="background:linear-gradient(145deg,#4b91ef,#2057bb)">◷</span><b>今日面板</b><span class="pl-d">概览、临期与待确认</span><span class="pl-badge">3</span></button>
+       <button class="pl-tile"><span class="pl-ic" style="background:linear-gradient(145deg,#2f9de4,#0f6cb4)">✉</span><b>邮件重点</b><span class="pl-d">AI 标出需要关注的邮件</span><span class="pl-badge">4</span></button>
+       <button class="pl-tile t-urgent"><span class="pl-ic" style="background:linear-gradient(145deg,#8d6fd0,#5f3fa8)">☑</span><b>当前任务</b><span class="pl-d">待确认 · 待处理 · 等待条件</span><span class="pl-badge">1</span></button>
+       <button class="pl-tile"><span class="pl-ic" style="background:linear-gradient(145deg,#a7b3c2,#78889b)">◐</span><b>免打扰</b><span class="pl-d">普通提醒静默，仅角标</span></button>
+       <button class="pl-tile"><span class="pl-ic" style="background:linear-gradient(145deg,#7e8ba0,#566274)">⚙</span><b>系统设置</b><span class="pl-d">提醒、显示与数据</span></button>
+       <button class="pl-tile dash"><span class="pl-ic" style="background:#fff;border:1px solid #cfe0f5;color:#2467c9">▤</span><b>完整面板</b><span class="pl-d">在任务窗格打开全部功能</span></button>
+      </div>
+      <div class="pl-more" style="cursor:default">桌面常驻入口：单击桌宠随时打开 <span style="color:#9aa6b4">v2.1</span></div>
+     </div>
+     <div class="pop-foot"><button class="btn primary">打开完整面板</button><button class="btn">免打扰</button><button class="btn">设置</button></div>
+     <div class="pop-hint">点击功能进入详情 · Esc 关闭 · Alt+P 快捷开关 · 右键桌宠更多选项</div>
+    </div>
+   </section>
+
+   <!-- 任务窗格：今日视图 -->
+   <aside class="sidebar">
+    <div class="side-head"><div class="spark">✦</div><div><div class="side-title">MailPet</div><div class="side-sub">Outlook 加载项 · 任务窗格</div></div><span class="sync">● 已同步</span><span class="close-side" aria-hidden="true">×</span></div>
+    <nav class="nav"><button class="active">今日</button><button>邮件</button><button>任务</button><button>规则</button><button>验证</button><button>设置</button></nav>
+    <div class="side-content">
+     <div class="view-title"><h2>今日面板</h2><span class="tag green">实时状态</span></div><div class="subtle">周一，11 月 9 日 · 最近同步 09:42</div>
+     <div class="stats"><div class="stat amber"><span>待确认</span><strong>03</strong></div><div class="stat blue"><span>待处理</span><strong>08</strong></div><div class="stat purple"><span>等待条件</span><strong>02</strong></div><div class="stat green"><span>已完成</span><strong>12</strong></div></div>
+     <div class="section-title">临期任务 <span class="tag red">未来 24 小时</span></div>
+     <div class="task-card"><div class="task-top"><div class="task-name">小组报告：提交最终版本</div><span class="tag red">临期</span></div><div class="task-meta">今天 17:00 · Project Team</div><div class="row-actions"><button class="btn soft">查看任务</button><button class="btn">稍后提醒</button></div></div>
+     <div class="section-title">待确认事项 <button class="link">查看全部 →</button></div>
+     <div class="task-card"><div class="task-top"><div class="task-name">Assignment 2 – Submission reminder</div><span class="tag amber">待确认</span></div><div class="task-meta">确认截止日期与预计耗时 · Prof. Chen</div><div class="row-actions"><button class="btn primary">确认任务</button><button class="btn">查看依据</button></div></div>
+     <div class="section-title">等待条件</div><div class="task-card"><div class="task-name">等待同学提供最终数据附件</div><div class="task-meta">下次检查：明天 10:00 · 保留截止风险提示</div></div>
+     <div class="section-title">最近完成 <span class="subtle">12 项</span></div><div class="task-card"><div class="task-name">完成 Week 7 课件复习</div><div class="task-meta">今天 08:30 · 已完成</div></div>
+    </div>
+   </aside>
+  </main>
+ </div>
+</div>
+
+<!-- ═══════════ 02 桌宠五状态 / 提示气泡 / 右键菜单 / 托盘 ═══════════ -->
+<div class="sec">02 · 桌宠五状态与附属入口 <small>FR-07：图标 + 数字 + 文字双通道表达</small></div>
+<div class="cards">
+ <div class="card"><p class="item-label">五种业务状态 <span>优先级：免打扰 &gt; 临期 &gt; 待确认 &gt; 待机</span></p>
+  <div style="display:flex;gap:26px;flex-wrap:wrap;justify-content:center;padding:8px 0 2px">
+   <div class="petcell"><div class="pet" data-state="idle"><span>✦</span><small>AI</small></div><b>待机 Idle</b><span>无角标 · 暂无需要立即处理的事项</span></div>
+   <div class="petcell"><div class="pet" data-state="pending"><span>✦</span><small>AI</small><span class="pet-badge">3</span></div><b>待确认 Pending</b><span>琥珀角标 = 待确认数</span></div>
+   <div class="petcell"><div class="pet" data-state="urgent"><span>✦</span><small>AI</small><span class="pet-badge">1</span></div><b>临期 Urgent</b><span>红角标 = 24h 内到期数（带外圈脉动）</span></div>
+   <div class="petcell"><div class="pet" data-state="success"><span>✓</span><small>AI</small></div><b>成功 Success</b><span>操作成功瞬态 2.2s 后回落</span></div>
+   <div class="petcell"><div class="pet" data-state="dnd"><span>☾</span><small>AI</small></div><b>免打扰 DND</b><span>灰化 · 普通提醒静默，仅角标</span></div>
+  </div>
+ </div>
+ <div class="card"><p class="item-label">悬停状态气泡 <span>pointer-events:none，不挡点击</span></p>
+  <div class="center" style="flex-direction:column;gap:14px;padding:6px 0">
+   <div class="pet-tip">3 项待确认 · 单击打开功能面板</div>
+   <div class="pet-tip">免打扰中 · 仅更新角标</div>
+   <div class="pet-tip">1 项任务临期 · 单击打开功能面板</div>
+  </div>
+ </div>
+ <div class="card"><p class="item-label">右键菜单 <span>186px · 顶部首项为 hover 态示例</span></p>
+  <div class="pet-menu">
+   <button>✦　打开功能面板</button>
+   <button>▤　打开完整面板</button>
+   <button>◐　开启免打扰</button>
+   <button>◷　稍后提醒</button>
+   <button>⚙　设置</button>
+   <hr>
+   <button>⛶　隐藏到托盘</button>
+  </div>
+ </div>
+ <div class="card"><p class="item-label">托盘恢复气泡 <span>隐藏桌宠后出现于窗口右下角</span></p>
+  <div class="center" style="padding:14px 0"><span class="tray-chip">⛶ MailPet 已在托盘 · 点击恢复</span></div>
+  <div class="subtle" style="text-align:center;margin-top:6px">恢复后桌宠回到隐藏前的位置（位置本地记忆）</div>
+ </div>
+</div>
+
+<!-- ═══════════ 03 功能面板全部页面 ═══════════ -->
+<div class="sec">03 · 功能面板：宫格（L0）与五个详情页（L1） <small>宽 380 · 圆角 14 · 非模态 · 详情页头部出现 ‹ 返回</small></div>
+<div class="cards">
+
+ <div class="card"><p class="item-label">L0 · 功能宫格 <span>单击桌宠后的首页</span></p>
+  <div class="pop">
+   <div class="pop-head"><div class="spark">✦</div><div><div class="pop-title">MailPet · 快捷功能</div><div class="pop-date">11 月 9 日 周一 · 最近同步 09:42</div></div><span class="sync">● 已同步</span><span class="pop-close" aria-hidden="true">×</span></div>
+   <div class="pop-body">
+    <div class="pl-grid">
+     <button class="pl-tile"><span class="pl-ic" style="background:linear-gradient(145deg,#4b91ef,#2057bb)">◷</span><b>今日面板</b><span class="pl-d">概览、临期与待确认</span><span class="pl-badge">3</span></button>
+     <button class="pl-tile"><span class="pl-ic" style="background:linear-gradient(145deg,#2f9de4,#0f6cb4)">✉</span><b>邮件重点</b><span class="pl-d">AI 标出需要关注的邮件</span><span class="pl-badge">4</span></button>
+     <button class="pl-tile t-urgent"><span class="pl-ic" style="background:linear-gradient(145deg,#8d6fd0,#5f3fa8)">☑</span><b>当前任务</b><span class="pl-d">待确认 · 待处理 · 等待条件</span><span class="pl-badge">1</span></button>
+     <button class="pl-tile"><span class="pl-ic" style="background:linear-gradient(145deg,#a7b3c2,#78889b)">◐</span><b>免打扰</b><span class="pl-d">普通提醒静默，仅角标</span></button>
+     <button class="pl-tile"><span class="pl-ic" style="background:linear-gradient(145deg,#7e8ba0,#566274)">⚙</span><b>系统设置</b><span class="pl-d">提醒、显示与数据</span></button>
+     <button class="pl-tile dash"><span class="pl-ic" style="background:#fff;border:1px solid #cfe0f5;color:#2467c9">▤</span><b>完整面板</b><span class="pl-d">在任务窗格打开全部功能</span></button>
+    </div>
+    <div class="pl-more" style="cursor:default">桌面常驻入口：单击桌宠随时打开 <span style="color:#9aa6b4">v2.1</span></div>
+   </div>
+   <div class="pop-foot"><button class="btn primary">打开完整面板</button><button class="btn">免打扰</button><button class="btn">设置</button></div>
+   <div class="pop-hint">点击功能进入详情 · Esc 关闭 · Alt+P 快捷开关 · 右键桌宠更多选项</div>
+  </div>
+ </div>
+
+ <div class="card"><p class="item-label">L1 · 今日面板 <span>临期红横幅 + 四类统计 + 卡片操作</span></p>
+  <div class="pop">
+   <div class="pop-head"><span class="pop-back" aria-hidden="true">‹</span><div class="spark">✦</div><div><div class="pop-title">今日面板</div><div class="pop-date">11 月 9 日 周一 · 最近同步 09:42</div></div><span class="sync">● 已同步</span><span class="pop-close" aria-hidden="true">×</span></div>
+   <div class="pop-body">
+    <div class="pop-banner urgent">⏰ <b>1 项任务将在 24 小时内到期</b> · 建议现在处理</div>
+    <div class="pop-stats">
+     <div class="pop-stat amber"><b>3</b><span>待确认</span></div>
+     <div class="pop-stat blue"><b>8</b><span>待处理</span></div>
+     <div class="pop-stat purple"><b>2</b><span>等待条件</span></div>
+     <div class="pop-stat green"><b>12</b><span>已完成</span></div>
+    </div>
+    <div class="pop-sec">临期任务 <span class="tag red">24 小时内</span></div>
+    <div class="pop-card"><div class="task-top"><div class="task-name">小组报告：提交最终版本</div><span class="tag red">临期</span></div><div class="task-meta">今天 17:00 · Project Team · 剩余约 7 小时</div><div class="row-actions"><button class="btn soft">查看任务</button><button class="btn">稍后提醒</button><button class="btn primary">完成</button></div></div>
+    <div class="pop-sec">待确认事项 <button class="link">查看全部 →</button></div>
+    <div class="pop-card"><div class="task-top"><div class="task-name">Assignment 2 – Submission reminder</div><span class="tag amber">待确认</span></div><div class="task-meta">确认截止日期与预计耗时 · Prof. Chen</div><div class="row-actions"><button class="btn primary">确认任务</button><button class="btn">查看依据</button></div></div>
+    <div class="pop-sec">等待条件</div>
+    <div class="pop-wait">⏳ 等待同学提供最终数据附件 · 明天 10:00 检查 · <button class="link">管理</button></div>
+   </div>
+   <div class="pop-foot"><button class="btn primary">在完整面板中查看</button></div>
+   <div class="pop-hint">‹ 返回功能菜单 · Esc 返回</div>
+  </div>
+ </div>
+
+ <div class="card"><p class="item-label">L1 · 邮件重点 <span>AI 标出 + “为什么重要”依据</span></p>
+  <div class="pop">
+   <div class="pop-head"><span class="pop-back" aria-hidden="true">‹</span><div class="spark">✦</div><div><div class="pop-title">邮件重点</div><div class="pop-date">11 月 9 日 周一 · 最近同步 09:42</div></div><span class="sync">● 已同步</span><span class="pop-close" aria-hidden="true">×</span></div>
+   <div class="pop-body">
+    <div class="subtle" style="margin-bottom:9px">AI 从收件箱标出的重点邮件与原因；点击卡片查看原文、证据与任务。</div>
+    <div class="hl-mail"><div class="hl-top"><div style="flex:1"><b style="font-size:12px">Updated dataset for group report</b><div class="task-meta">Project Team · AI 重要性：高</div></div><span class="tag red">临期 · 今天 17:00</span><span class="tag blue">2 个行动项</span></div><div class="hl-why"><span class="why red">截止时间在今天 17:00</span><span class="why red">数据已更新，报告待检查</span><span class="why red">仍在等待队友附件</span></div></div>
+    <div class="hl-mail"><div class="hl-top"><div style="flex:1"><b style="font-size:12px">Assignment 2 – Submission reminder</b><div class="task-meta">Prof. Chen · AI 重要性：中</div></div><span class="tag amber">待确认</span><span class="tag blue">1 个行动项</span></div><div class="hl-why"><span class="why">含明确截止时间 11 月 15 日</span><span class="why">确认后生成待办与提醒</span></div></div>
+    <div class="hl-mail"><div class="hl-top"><div style="flex:1"><b style="font-size:12px">Seminar registration</b><div class="task-meta">Data Science Office · AI 重要性：中</div></div><span class="tag purple">候选行动项</span><span class="tag amber">日期待确认</span></div><div class="hl-why"><span class="why">是否参加需要你判断</span><span class="why">邮件未写明日期，不做猜测</span></div></div>
+    <div class="hl-mail"><div class="hl-top"><div style="flex:1"><b style="font-size:12px">Book return notice</b><div class="task-meta">Library Services · AI 重要性：中</div></div><span class="tag blue">行动项</span><span class="tag amber">无明确日期</span></div><div class="hl-why"><span class="why">图书即将到期</span><span class="why">未定位到具体日期，建议补充</span></div></div>
+    <div class="pl-more">其余 1 封未识别到明确任务 · 查看全部邮件 <span>→</span></div>
+   </div>
+   <div class="pop-foot"><button class="btn primary">打开邮件分析</button></div>
+   <div class="pop-hint">‹ 返回功能菜单 · Esc 返回</div>
+  </div>
+ </div>
+
+ <div class="card"><p class="item-label">L1 · 当前任务 <span>按状态分组 · 可就地操作</span></p>
+  <div class="pop">
+   <div class="pop-head"><span class="pop-back" aria-hidden="true">‹</span><div class="spark">✦</div><div><div class="pop-title">当前任务</div><div class="pop-date">11 月 9 日 周一 · 最近同步 09:42</div></div><span class="sync">● 已同步</span><span class="pop-close" aria-hidden="true">×</span></div>
+   <div class="pop-body">
+    <div class="subtle" style="margin-bottom:4px">任务状态独立于邮件已读；完成前持续保留。每个行动项单独确认。</div>
+    <div class="tk-group">待确认</div>
+    <div class="pop-card"><div class="task-top"><div class="task-name">提交 Assignment 2</div><span class="tag amber">待确认</span></div><div class="task-meta">11 月 15 日 · Prof. Chen</div><div class="row-actions"><button class="btn primary">确认</button><button class="btn">原邮件</button></div></div>
+    <div class="tk-group">待处理 · 临期</div>
+    <div class="pop-card"><div class="task-top"><div class="task-name">小组报告：提交最终版本</div><span class="tag red">临期</span></div><div class="task-meta">今天 17:00 · Project Team</div><div class="row-actions"><button class="btn">稍后提醒</button><button class="btn primary">完成</button></div></div>
+    <div class="tk-group">待处理</div>
+    <div class="pop-card"><div class="task-top"><div class="task-name">注册研究生研讨会</div><span class="tag blue">待处理</span></div><div class="task-meta">11 月 18 日 · Data Science Office</div><div class="row-actions"><button class="btn">查看邮件</button><button class="btn primary">完成</button></div></div>
+    <div class="tk-group">等待条件</div>
+    <div class="pop-wait">⏳ 等待同学提供最终数据附件 · 明天 10:00 检查 · <button class="link">管理</button></div>
+   </div>
+   <div class="pop-foot"><button class="btn primary">打开任务管理</button></div>
+   <div class="pop-hint">‹ 返回功能菜单 · Esc 返回</div>
+  </div>
+ </div>
+
+ <div class="card"><p class="item-label">L1 · 免打扰 <span>开关 + 自动时段 + 临期穿透（FR-06）</span></p>
+  <div class="pop">
+   <div class="pop-head"><span class="pop-back" aria-hidden="true">‹</span><div class="spark">✦</div><div><div class="pop-title">免打扰</div><div class="pop-date">11 月 9 日 周一 · 最近同步 09:42</div></div><span class="sync">● 已同步</span><span class="pop-close" aria-hidden="true">×</span></div>
+   <div class="pop-body">
+    <div class="pop-banner dnd">◐ <b>当前：关闭</b> · 开启后普通提醒静默</div>
+    <div class="setting-row"><div><b>立即开启免打扰</b><small>不播放声音、不主动弹窗</small></div><button class="toggle" aria-hidden="true"></button></div>
+    <div class="field"><label>自动开启时段</label><select><option>手动开启（不自动）</option><option>22:00 – 08:00</option><option>12:30 – 13:30</option><option>自定义…</option></select></div>
+    <div class="setting-row"><div><b>临期任务穿透提醒</b><small>免打扰中仍提醒 24 小时内到期的已确认任务</small></div><button class="toggle" aria-hidden="true"></button></div>
+    <div class="subtle" style="margin-top:9px">变更即时生效；桌宠会同步显示免打扰状态。</div>
+   </div>
+   <div class="pop-foot"><button class="btn primary">打开提醒设置</button></div>
+   <div class="pop-hint">‹ 返回功能菜单 · Esc 返回</div>
+  </div>
+ </div>
+
+ <div class="card"><p class="item-label">L1 · 系统设置 <span>常用快开关 + 更多设置入口</span></p>
+  <div class="pop">
+   <div class="pop-head"><span class="pop-back" aria-hidden="true">‹</span><div class="spark">✦</div><div><div class="pop-title">系统设置</div><div class="pop-date">11 月 9 日 周一 · 最近同步 09:42</div></div><span class="sync">● 已同步</span><span class="pop-close" aria-hidden="true">×</span></div>
+   <div class="pop-body">
+    <div class="setting-row"><div><b>免打扰</b><small>普通提醒静默，仅更新角标</small></div><button class="toggle" aria-hidden="true"></button></div>
+    <div class="setting-row"><div><b>减少动画</b><small>关闭脉动与弹出动画</small></div><button class="toggle" aria-hidden="true"></button></div>
+    <div class="setting-row"><div><b>桌宠置顶</b><small>仅在 Outlook 窗口内显示</small></div><button class="toggle on" aria-hidden="true"></button></div>
+    <div class="pl-more">邮箱连接、模型状态与数据管理 · 更多设置 <span>→</span></div>
+   </div>
+   <div class="pop-foot"><button class="btn primary">更多设置</button></div>
+   <div class="pop-hint">‹ 返回功能菜单 · Esc 返回</div>
+  </div>
+ </div>
+
+ <div class="card"><p class="item-label">紧凑模式 <span>窗口较矮 / 桌宠拖到中部时宫格自动 3×2</span></p>
+  <div class="pop">
+   <div class="pop-head"><div class="spark">✦</div><div><div class="pop-title">MailPet · 快捷功能</div><div class="pop-date">11 月 9 日 周一 · 最近同步 09:42</div></div><span class="sync">● 已同步</span><span class="pop-close" aria-hidden="true">×</span></div>
+   <div class="pop-body">
+    <div class="pl-grid" style="gap:7px;grid-template-columns:1fr 1fr 1fr">
+     <div class="pl-tile" style="flex-direction:row;align-items:center;gap:7px;padding:8px 9px"><span class="pl-ic" style="width:24px;height:24px;font-size:12px;border-radius:7px;background:linear-gradient(145deg,#4b91ef,#2057bb)">◷</span><b style="font-size:11px">今日面板</b><span class="pl-badge" style="top:6px;right:6px">3</span></div>
+     <div class="pl-tile" style="flex-direction:row;align-items:center;gap:7px;padding:8px 9px"><span class="pl-ic" style="width:24px;height:24px;font-size:12px;border-radius:7px;background:linear-gradient(145deg,#2f9de4,#0f6cb4)">✉</span><b style="font-size:11px">邮件重点</b><span class="pl-badge" style="top:6px;right:6px">4</span></div>
+     <div class="pl-tile t-urgent" style="flex-direction:row;align-items:center;gap:7px;padding:8px 9px"><span class="pl-ic" style="width:24px;height:24px;font-size:12px;border-radius:7px;background:linear-gradient(145deg,#8d6fd0,#5f3fa8)">☑</span><b style="font-size:11px">当前任务</b><span class="pl-badge" style="top:6px;right:6px">1</span></div>
+     <div class="pl-tile" style="flex-direction:row;align-items:center;gap:7px;padding:8px 9px"><span class="pl-ic" style="width:24px;height:24px;font-size:12px;border-radius:7px;background:linear-gradient(145deg,#a7b3c2,#78889b)">◐</span><b style="font-size:11px">免打扰</b></div>
+     <div class="pl-tile" style="flex-direction:row;align-items:center;gap:7px;padding:8px 9px"><span class="pl-ic" style="width:24px;height:24px;font-size:12px;border-radius:7px;background:linear-gradient(145deg,#7e8ba0,#566274)">⚙</span><b style="font-size:11px">系统设置</b></div>
+     <div class="pl-tile dash" style="flex-direction:row;align-items:center;gap:7px;padding:8px 9px"><span class="pl-ic" style="width:24px;height:24px;font-size:12px;border-radius:7px;background:#fff;border:1px solid #cfe0f5;color:#2467c9">▤</span><b style="font-size:11px">完整面板</b></div>
+    </div>
+   </div>
+   <div class="pop-foot"><button class="btn primary">打开完整面板</button><button class="btn">免打扰</button><button class="btn">设置</button></div>
+   <div class="pop-hint">紧凑布局：隐藏磁贴描述，保证 6 项功能一屏可见</div>
+  </div>
+ </div>
+</div>
+
+<!-- ═══════════ 04 任务窗格六视图 ═══════════ -->
+<div class="sec">04 · 任务窗格（加载项侧栏）六视图 <span style="font-size:11.5px;color:#98a1ad;font-weight:400">今日视图已在 01 总览中展示</span></div>
+<div class="cards">
+
+ <div class="card" style="padding:0;overflow:hidden"><p class="item-label" style="padding:14px 16px 0">视图 · 邮件 <span>只读接入 + AI 分析与原文证据</span></p>
+  <div class="sidebar" style="border:0;border-radius:0">
+   <nav class="nav"><button>今日</button><button class="active">邮件</button><button>任务</button><button>规则</button><button>验证</button><button>设置</button></nav>
+   <div class="side-content">
+    <div class="view-title"><h2>邮件</h2><span class="tag green">只读接入</span></div><div class="subtle">使用 Outlook 原生邮件列表；在此查看 AI 分析和原文证据。</div>
+    <input class="mail-search" placeholder="搜索当前邮件 / 发件人 / 主题">
+    <div class="mini-mail selected"><b>Prof. Chen · Assignment 2 – Submission reminder</b><p>摘要：请在 11 月 15 日前提交作业。 · 1 个行动项</p></div>
+    <div class="mini-mail"><b>Project Team · Updated dataset</b><p>摘要：最终数据文件已更新，等待组员提供附件。 · 2 个行动项</p></div>
+    <div class="mini-mail"><b>Data Science Office · Seminar registration</b><p>摘要：邀请参加下周研讨会。 · 1 个候选行动项</p></div>
+    <div class="mini-mail"><b>Library Services · Book return notice</b><p>摘要：图书即将到期。 · 1 个行动项</p></div>
+    <div class="mini-mail"><b>Teaching Assistant · Week 7 slides</b><p>摘要：课件已上传。 · 未识别到明确任务</p></div>
+    <div class="section-title">当前邮件 AI 分析</div>
+    <div class="panel-card"><div class="task-top"><b>提交 Assignment 2</b><span class="tag amber">待确认</span></div><p class="subtle">教授提醒学生在 11 月 15 日前提交 Assignment 2。</p><div class="status-line"><span>截止时间</span><b>11 月 15 日 · 日期精度</b></div><div class="status-line"><span>字段来源</span><span class="subtle">原文支持</span></div><div class="evidence">“Please submit <mark>Assignment 2 by November 15</mark>.”<br><button class="link">查看原文位置 →</button></div><div class="row-actions"><button class="btn primary">确认任务</button><button class="btn">修改任务</button><button class="btn">纠正判断</button></div></div>
+   </div>
+  </div>
+ </div>
+
+ <div class="card" style="padding:0;overflow:hidden"><p class="item-label" style="padding:14px 16px 0">视图 · 任务 <span>状态独立于邮件已读（FR-02/05）</span></p>
+  <div class="sidebar" style="border:0;border-radius:0">
+   <nav class="nav"><button>今日</button><button>邮件</button><button class="active">任务</button><button>规则</button><button>验证</button><button>设置</button></nav>
+   <div class="side-content">
+    <div class="view-title"><h2>任务管理</h2><button class="btn">＋ 手动建任务</button></div><div class="subtle">任务状态独立于邮件已读状态。每个行动项单独确认。</div>
+    <div class="list-tabs" style="font-size:12px;color:#718096;display:flex;gap:12px;flex-wrap:wrap;margin:15px 0 12px"><b style="color:#1671c4;border-bottom:2px solid #1671c4;padding-bottom:7px">全部</b><span>待确认</span><span>待处理</span><span>等待条件</span><span>已完成</span></div>
+    <div class="task-card"><div class="task-top"><div class="task-name">提交 Assignment 2</div><span class="tag amber">待确认</span></div><div class="task-meta">Prof. Chen · 11 月 15 日（日期精度）</div><div class="row-actions"><button class="btn primary">确认</button><button class="btn">编辑</button><button class="btn">原邮件</button></div></div>
+    <div class="task-card"><div class="task-top"><div class="task-name">小组报告：提交最终版本</div><span class="tag red">临期</span></div><div class="task-meta">Project Team · 今天 17:00</div><div class="row-actions"><button class="btn">查看</button><button class="btn">稍后提醒</button><button class="btn primary">完成</button></div></div>
+    <div class="task-card"><div class="task-top"><div class="task-name">等待同学提供最终数据附件</div><span class="tag purple">等待条件</span></div><div class="task-meta">等待组员提供文件 · 明天 10:00 检查</div><div class="row-actions"><button class="btn">修改检查时间</button><button class="btn">原邮件</button></div></div>
+    <div class="task-card"><div class="task-top"><div class="task-name">注册研究生研讨会</div><span class="tag blue">待处理</span></div><div class="task-meta">Data Science Office · 11 月 18 日</div><div class="row-actions"><button class="btn">查看邮件</button><button class="btn primary">完成</button></div></div>
+   </div>
+  </div>
+ </div>
+
+ <div class="card" style="padding:0;overflow:hidden"><p class="item-label" style="padding:14px 16px 0">视图 · 规则 <span>纠正三范围 + 影响预览（FR-08/09）</span></p>
+  <div class="sidebar" style="border:0;border-radius:0">
+   <nav class="nav"><button>今日</button><button>邮件</button><button>任务</button><button class="active">规则</button><button>验证</button><button>设置</button></nav>
+   <div class="side-content">
+    <div class="view-title"><h2>纠正与规则</h2><span class="tag blue">用户授权</span></div><div class="subtle">纠正先作用于当前邮件；复用规则前必须预览影响范围。</div>
+    <div class="panel-card"><div class="section-title" style="margin-top:0">当前 AI 判断</div><div class="status-line"><span>是否需要处理</span><b>是 · 待确认</b></div><div class="status-line"><span>重要性</span><b>重要</b></div><div class="status-line"><span>任务内容</span><b>提交 Assignment 2</b></div><div class="status-line"><span>截止时间</span><b>11 月 15 日</b></div><button class="btn soft">纠正当前邮件</button></div>
+    <div class="section-title">纠正规则创建</div><div class="field"><label>修改字段</label><select><option>重要性</option><option>是否需要处理</option><option>适用对象</option><option>是否提示行动</option></select></div><div class="field"><label>修改为</label><select><option>普通</option><option>不需要处理</option><option>不适用于我</option><option>不提示行动</option></select></div>
+    <div class="section-title">适用范围</div><div class="choice selected"><b>仅当前邮件</b><small>不创建可复用规则，仅修改当前邮件。</small></div><div class="choice"><b>同一发件人</b><small>完整邮箱地址匹配，不使用显示名称。</small></div><div class="choice"><b>同一项目</b><small>只匹配用户显式添加的项目标签。</small></div>
+    <div class="field"><label>项目标签（选择同一项目时使用）</label><select><option>未选择项目标签</option><option>课程：Data Mining</option><option>项目：小组报告</option></select></div>
+    <button class="btn primary">预览影响范围 →</button>
+    <div class="section-title">影响范围预览（示例）</div>
+    <div class="panel-card"><div class="subtle">本地样本 · 近 30 天 · 42 封邮件（不是整个邮箱总量）</div><div class="status-line"><span>匹配条件</span><b>仅当前邮件</b></div><div class="status-line"><span>预计受影响</span><b>1 封</b></div><div class="evidence">修改前：重要 / 需要提示行动<br>修改后：普通 / 不提示行动</div><div class="mini-mail"><b>课程通知：期中安排</b><p>当前判断：待处理 → 修改后：普通</p></div><div class="subtle">默认只对未来匹配邮件生效；历史邮件批量重算需另行确认。</div><div class="row-actions"><button class="btn">返回修改</button><button class="btn primary">确认启用规则</button></div></div>
+    <div class="section-title">已启用规则</div><div class="task-card"><div class="task-name">课程通知降为普通优先级</div><div class="task-meta">发件人：office@university.edu · 版本 2 · 仅未来邮件</div><div class="row-actions"><button class="btn">查看历史</button><button class="btn danger">暂停 / 撤销</button></div></div>
+   </div>
+  </div>
+ </div>
+
+ <div class="card" style="padding:0;overflow:hidden"><p class="item-label" style="padding:14px 16px 0">视图 · 验证 <span>固定测试集回放（FR-10）</span></p>
+  <div class="sidebar" style="border:0;border-radius:0">
+   <nav class="nav"><button>今日</button><button>邮件</button><button>任务</button><button>规则</button><button class="active">验证</button><button>设置</button></nav>
+   <div class="side-content">
+    <div class="view-title"><h2>效果验证</h2><span class="tag green">固定测试集</span></div><div class="subtle">回放使用已保存的基础 AI 输出，不重新生成模型结果。</div>
+    <div class="stats" style="margin-top:15px"><div class="stat green"><span>正确结果</span><strong>8/10</strong></div><div class="stat green"><span>改善项</span><strong>+3</strong></div><div class="stat amber"><span>未受影响</span><strong>6</strong></div><div class="stat" style="color:var(--red)"><span>退化项</span><strong>1</strong></div></div>
+    <div class="section-title">启用前后对比 <button class="link">重新回放 ↻</button></div><div class="status-line"><span>原始 AI 输出</span><b>5 / 10</b></div><div class="progress"><span style="width:50%;background:#9aa9ba"></span></div><div class="status-line"><span>启用规则后</span><b style="color:var(--green)">8 / 10</b></div><div class="progress"><span style="width:80%"></span></div>
+    <div class="section-title">回放结果明细</div><div class="task-card"><div class="task-top"><b>改善 · 课程通知不再误报</b><span class="tag green">改善</span></div><div class="task-meta">规则：同一发件人 · 样本 03</div></div><div class="task-card"><div class="task-top"><b>一封含行动项邮件被忽略</b><span class="tag red">退化</span></div><div class="task-meta">建议缩小规则范围 · 样本 07</div></div><div class="task-card"><div class="task-top"><b>普通系统通知</b><span class="tag gray">未变化</span></div><div class="task-meta">没有规则命中 · 样本 09</div></div>
+    <div class="section-title">后续实际命中</div><div class="panel-card"><b style="font-size:12px">课程通知规则</b><p class="subtle">命中条件：发件人完整地址匹配。可继续纠正或暂停。</p><button class="btn">管理规则</button></div>
+   </div>
+  </div>
+ </div>
+
+ <div class="card" style="padding:0;overflow:hidden"><p class="item-label" style="padding:14px 16px 0">视图 · 设置 <span>加载项授权 + 本地优先（FR-01/11/12）</span></p>
+  <div class="sidebar" style="border:0;border-radius:0">
+   <nav class="nav"><button>今日</button><button>邮件</button><button>任务</button><button>规则</button><button>验证</button><button class="active">设置</button></nav>
+   <div class="side-content">
+    <div class="view-title"><h2>系统设置</h2><span class="tag blue">本地优先</span></div><div class="subtle">作为 Outlook 加载项运行：邮箱访问由 Outlook 授权，数据默认保存在本机。</div>
+    <div class="section-title">邮箱连接（加载项授权）</div>
+    <div class="panel-card"><div class="status-line"><span>连接状态</span><span class="tag green">已授权 · 演示</span></div><div class="status-line"><span>授权方式</span><b>Outlook 宿主授权（Graph · Mail.Read 只读）</b></div><div class="subtle" style="margin-top:8px">应用不保存邮箱密码；只读取邮件，不改动服务器上的已读、删除或移动状态。</div><div class="row-actions"><button class="btn">查看权限</button><button class="btn">断开账号</button></div></div>
+    <div class="section-title">同步范围</div>
+    <div class="panel-card"><div class="field"><label>初始同步时间范围</label><select><option>最近 30 天</option><option>最近 7 天</option><option>最近 90 天</option><option>自定义</option></select></div><div class="field"><label>最多同步邮件数</label><input value="500"></div><div class="subtle">只读同步：不改变服务器已读标记，不删除、不移动邮件。</div></div>
+    <div class="section-title">模型状态</div>
+    <div class="panel-card"><div class="status-line"><span>本地模型</span><span class="tag green">可用（原型）</span></div><div class="subtle">模型不可用时回退到手动处理，不自动切换云服务。</div></div>
+    <div class="section-title">提醒与桌宠</div>
+    <div class="setting-row"><div><b>免打扰</b><small>免打扰时不播放声音、不主动弹窗</small></div><button class="toggle" aria-hidden="true"></button></div>
+    <div class="setting-row"><div><b>桌宠置顶</b><small>仅在 Outlook 窗口内显示</small></div><button class="toggle on" aria-hidden="true"></button></div>
+    <div class="setting-row" style="border-bottom:0"><div><b>减少动画</b><small>关闭脉动与弹出动画，降低动态效果</small></div><button class="toggle" aria-hidden="true"></button></div>
+    <div class="section-title">数据与隐私</div>
+    <div class="panel-card"><div class="subtle">邮件缓存、任务、证据和规则默认保存在本机。日志不记录邮件正文、密码或令牌。</div><button class="btn danger" style="margin-top:12px">清理本地数据</button></div>
+   </div>
+  </div>
+ </div>
+</div>
+
+<!-- ═══════════ 05 模态弹窗与提示 ═══════════ -->
+<div class="sec">05 · 模态弹窗与全局提示 <span style="font-size:11.5px;color:#98a1ad;font-weight:400">静态平铺展示</span></div>
+<div class="cards">
+ <div class="card"><p class="item-label">编辑任务 <span>确认后可修改标题 / 截止 / 耗时 / 提醒</span></p>
+  <div class="modal">
+   <h3>编辑任务</h3><div class="subtle">本原型使用模拟数据，不会连接或修改真实邮箱。</div>
+   <div class="field"><label>任务标题</label><input value="提交 Assignment 2"></div>
+   <div class="field"><label>截止日期</label><input value="2026-11-15" type="date"></div>
+   <div class="field"><label>预计耗时（用户输入）</label><input placeholder="例如：2 小时"></div>
+   <div class="field"><label>提醒设置</label><select><option>截止前 1 天</option><option>截止前 2 小时</option><option>暂不提醒</option></select></div>
+   <div class="actions" style="display:flex;justify-content:flex-end;gap:8px;margin-top:18px"><button class="btn">取消</button><button class="btn primary">保存</button></div>
+  </div>
+ </div>
+ <div class="card"><p class="item-label">稍后提醒 <span>提醒属性，不改变任务完成状态（FR-05）</span></p>
+  <div class="modal">
+   <h3>稍后提醒</h3><div class="subtle">选择下次提醒时间。稍后提醒是提醒属性，不会改变任务完成状态。</div>
+   <div class="field"><label>提醒时间</label><select><option>30 分钟后</option><option>今天 15:00</option><option>明天 09:00</option></select></div>
+   <div class="actions" style="display:flex;justify-content:flex-end;gap:8px;margin-top:18px"><button class="btn">取消</button><button class="btn primary">保存</button></div>
+  </div>
+ </div>
+ <div class="card"><p class="item-label">手动创建任务 <span>模型不可用 / 漏识别时的人工兜底（FR-12）</span></p>
+  <div class="modal">
+   <h3>手动创建任务</h3><div class="subtle">本原型使用模拟数据，不会连接或修改真实邮箱。</div>
+   <div class="field"><label>任务标题</label><input placeholder="输入任务标题"></div>
+   <div class="field"><label>截止日期（可选）</label><input type="date"></div>
+   <div class="field"><label>关联邮件</label><select><option>不关联邮件</option><option>当前选中邮件</option></select></div>
+   <div class="actions" style="display:flex;justify-content:flex-end;gap:8px;margin-top:18px"><button class="btn">取消</button><button class="btn primary">保存</button></div>
+  </div>
+ </div>
+ <div class="card"><p class="item-label">全局提示 Toast <span>底部居中 · 2.6s 自动消失（交互版）</span></p>
+  <div style="display:flex;flex-direction:column;gap:12px;align-items:flex-start;padding:8px 0">
+   <span class="toast">任务已确认，已加入待处理列表；相关未触发提醒保持待命</span>
+   <span class="toast">临期任务已完成；今晚 17:00 的提醒已取消</span>
+   <span class="toast">已开启免打扰：普通提醒静默，仅更新角标</span>
+   <span class="toast">桌宠已隐藏到托盘；点击右下角气泡恢复</span>
+  </div>
+ </div>
+</div>
+
+<div class="note-strip">静态版说明：本页面不含任何 JavaScript，所有交互状态（宫格/详情页、五状态、右键菜单、托盘、模态、提示）均以静态版式平铺呈现，可直接用于评审、文档与截图。需要真实交互（单击桌宠、两级导航、拖拽、键盘快捷键）请打开 <b>prototype.html</b>；设计规范见 Figma 风格设计稿 v2.1 与 <b>PROTOTYPE.md</b>。</div>
+
+</div>
+</body>
+</html>

@@ -10,4 +10,7 @@ Outlook AI 邮件助手（桌宠）的交互原型，两个保真度阶段的版
 
 **在线体验（GitHub Pages）**：<https://wyr20031216.github.io/HCI-desktop-pet-email-manager/>
 
-详细的原型结构说明（对应 Medium-Fi v2.1 版本）见 [PROTOTYPE.md](PROTOTYPE.md)。
+原型说明文档（按保真度区分）：
+
+- Hi-Fi（v3.0）：按功能组织的操作流程见 [PROTOTYPE-HIFI.md](PROTOTYPE-HIFI.md)
+- Medium-Fi（v2.1）：结构与组件说明见 [PROTOTYPE-MEDIUM.md](PROTOTYPE-MEDIUM.md)

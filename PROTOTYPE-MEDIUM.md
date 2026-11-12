@@ -1,6 +1,6 @@
-# MailPet · Outlook AI 邮件助手加载项 · 原型说明文档
+# MailPet · Medium-Fi 中保真原型说明（v2.1 · 双面板架构）
 
-对应文件：`prototype.html`（v2.1，2026-11-09） · 配套：`README.md`（版本变更）、Figma 风格设计稿画板（v2.1）
+对应文件：`prototype-medium.html`（v2.1 双面板架构，2026-11-09） · Hi-Fi 最新版（v3.0 气泡单面板）的功能操作流程见 `PROTOTYPE-HIFI.md`
 依据：《桌宠邮件助手：项目需求与开源选型》FR-01～FR-12
 
 ---

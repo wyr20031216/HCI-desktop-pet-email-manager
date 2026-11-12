@@ -1,15 +1,15 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MailPet · Medium-Fi 中保真原型 v2.1（双面板架构 · 对比留档）</title>
+<title>MailPet · Medium-Fi Prototype v2.1 (two-panel architecture, kept for comparison)</title>
 <style>
 :root{--blue:#2563eb;--blue2:#eaf2ff;--ink:#172235;--muted:#718096;--line:#e4eaf1;--bg:#f4f7fb;--white:#fff;--green:#16845b;--greenbg:#e8f7f0;--amber:#b76e08;--amberbg:#fff4df;--red:#c44747;--redbg:#fdecec;--purple:#7556b5;--purplebg:#f1edfa;--shadow:0 12px 35px rgba(20,45,80,.13)}
 *{box-sizing:border-box}body{margin:0;background:#eef2f7;color:var(--ink);font:14px/1.45 "Segoe UI","Microsoft YaHei",Arial,sans-serif}.app{height:100vh;min-height:560px;display:flex;flex-direction:column;background:#fff;overflow:hidden}.titlebar{height:54px;display:flex;align-items:center;gap:18px;padding:0 18px;border-bottom:1px solid var(--line);background:#fff}.outlook-mark{width:28px;height:28px;border-radius:6px;background:#0874c9;color:white;display:grid;place-items:center;font-weight:700;font-size:17px}.brand{font-weight:650;font-size:16px}.search{margin-left:28px;width:min(420px,34vw);height:32px;background:#f5f7fa;border:1px solid #e7ebf0;border-radius:7px;padding:6px 12px;color:#8793a3}.topright{margin-left:auto;color:#758195;display:flex;gap:22px}.toolbar{height:48px;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 22px;gap:25px;color:#536174;background:#fff}.toolbar .primary{color:#0874c9;font-weight:600}.addin-cmd{margin-left:auto;display:flex;align-items:center;gap:7px;height:34px;padding:0 13px;border:1px solid #cfe0f5;border-radius:8px;background:linear-gradient(#f4f9ff,#e9f2fd);color:#1d5fb0;font-weight:650;font-size:12px;cursor:pointer}.addin-cmd:hover{background:#e3eefc}.addin-cmd .mark{width:20px;height:20px;border-radius:6px;background:linear-gradient(145deg,#4b91ef,#2057bb);color:#fff;display:grid;place-items:center;font-size:12px}
 .workspace{display:flex;flex:1;min-height:0;position:relative}.folders{width:198px;background:#f8fafd;border-right:1px solid var(--line);padding:18px 12px;flex-shrink:0}.folder-head{font-size:12px;color:#8b96a5;margin:5px 9px 12px}.folder{height:36px;display:flex;align-items:center;padding:0 10px;border-radius:6px;color:#59677a;margin:3px 0}.folder.active{background:#e8f1fc;color:#1267b1;font-weight:600}.count{margin-left:auto;font-size:11px;background:#e7eff9;border-radius:10px;padding:2px 7px}.mail-list{width:320px;border-right:1px solid var(--line);background:#fff;flex-shrink:0}.list-head{height:76px;padding:16px 18px 8px}.list-head h2{margin:0 0 9px;font-size:19px}.list-tabs{font-size:12px;color:#718096;display:flex;gap:20px}.list-tabs b{color:#1671c4;border-bottom:2px solid #1671c4;padding-bottom:7px}.mail-item{height:91px;padding:12px 17px;border-bottom:1px solid #edf0f4;cursor:pointer;position:relative}.mail-item:hover{background:#f8fbff}.mail-item.selected{background:#eaf3ff;border-left:3px solid #2675d1;padding-left:14px}.mail-sender{font-weight:650;font-size:12px}.mail-time{position:absolute;right:14px;top:13px;color:#8793a3;font-size:10px}.mail-subject{font-size:12px;margin-top:6px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mail-snippet{font-size:11px;color:#8190a2;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.reading{flex:1;min-width:280px;background:#fff;padding:22px 25px;overflow:auto}.reading h1{font-size:20px;margin:0 0 14px}.sender-line{color:#718096;font-size:12px;margin-bottom:22px}.reading p{font-size:13px;line-height:1.9;max-width:700px}.reading .email-quote{margin-top:20px;padding:14px 16px;border-left:3px solid #8ab7ef;background:#f7faff;color:#4b5d73;max-width:700px}.reading .attachment{display:inline-flex;padding:9px 12px;border:1px solid var(--line);border-radius:7px;margin-top:18px;color:#536174;font-size:12px}
 
-/* ============ 桌宠（FR-07：五状态） ============ */
+/* ============ pet(FR-07: five states) ============ */
 .pet{position:absolute;left:auto;top:auto;width:56px;height:56px;border:0;border-radius:50%;background:linear-gradient(145deg,#4b91ef,#2057bb);box-shadow:0 8px 20px #2459a044;cursor:grab;z-index:40;color:#fff;font-size:22px;line-height:1;display:grid;place-items:center;touch-action:none;user-select:none;transition:transform .15s ease,background .2s ease}.pet:active{cursor:grabbing}.pet:hover{transform:translateY(-2px)}
 body.reduce-anim .pet{transition:none}
 body.reduce-anim .pet:hover{transform:none}
@@ -27,7 +27,7 @@ body.reduce-anim .pet[data-state="urgent"]{animation:none}
 .pet:hover+.pet-tip,.pet:focus-visible+.pet-tip{display:block}
 .pet-menu{position:absolute;width:186px;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);padding:6px;z-index:50;display:none}.pet-menu button{display:block;width:100%;border:0;background:#fff;text-align:left;padding:9px;border-radius:6px;color:#4d5b6d;cursor:pointer;font-size:12px}.pet-menu button:hover{background:#f2f6fc}.pet-menu hr{border:0;border-top:1px solid #eef1f5;margin:5px 4px}
 
-/* ============ 点击桌宠 → 快捷弹框（本次核心新增） ============ */
+/* ============ Click the pet → quick popup (new in this release) ============ */
 .pop{position:absolute;width:380px;max-height:calc(100% - 20px);background:#fff;border:1px solid #dfe6ef;border-radius:14px;box-shadow:0 22px 60px rgba(19,34,56,.2);z-index:45;display:none;flex-direction:column;overflow:hidden}
 .pop.open{display:flex;animation:popIn .16s ease}
 body.reduce-anim .pop.open{animation:none}
@@ -59,7 +59,7 @@ body.reduce-anim .pop.open{animation:none}
 .pop-foot{display:flex;gap:8px;padding:11px 16px;border-top:1px solid var(--line);background:#fbfcfe}
 .pop-foot .btn{flex:1;text-align:center}
 .pop-hint{padding:7px 16px 9px;font-size:10px;color:#9aa6b4;background:#fbfcfe;border-top:1px dashed #e8edf3;text-align:center}
-/* 两级导航：功能宫格 + 详情页 */
+/* Two-level nav: launcher grid + detail page */
 .pop-back{display:none;border:0;background:transparent;color:#8a95a4;font-size:19px;cursor:pointer;line-height:1;padding:2px 6px 2px 2px}
 .pop.lv1 .pop-back{display:inline-block}
 .pop.lv1 .pop-foot .btn:not(#popCtxBtn){display:none}
@@ -85,7 +85,7 @@ body.reduce-anim .pop.open{animation:none}
 .why.red{background:var(--redbg);color:var(--red);border-color:#f3d3d3}
 .tk-group{font-size:11px;font-weight:700;color:#5d6b7d;margin:11px 0 6px}
 .tk-group:first-child{margin-top:2px}
-/* 空间受限时的紧凑宫格：3×2 横排磁贴，保证一屏放全 */
+/* Compact grid when space is tight: 3×2 tiles in rows so all six fit on screen */
 .pop.compact .pl-grid{gap:7px;grid-template-columns:1fr 1fr 1fr}
 .pop.compact .pl-tile{flex-direction:row;align-items:center;gap:7px;padding:8px 9px}
 .pop.compact .pl-tile .pl-d{display:none}
@@ -94,11 +94,11 @@ body.reduce-anim .pop.open{animation:none}
 .pop.compact .pl-tile .pl-badge{top:6px;right:6px}
 .pop.compact #pv-launch .pl-more{display:none}
 
-/* 托盘恢复入口（隐藏桌宠后） */
+/* Tray restore entry (after hiding the pet) */
 .tray-chip{position:absolute;right:16px;bottom:12px;display:none;align-items:center;gap:8px;height:34px;padding:0 13px;border:1px solid #cfe0f5;border-radius:20px;background:#fff;box-shadow:var(--shadow);color:#1d5fb0;font-size:12px;font-weight:600;cursor:pointer;z-index:38}
 .tray-chip.show{display:flex}
 
-/* ============ 任务窗格（加载项侧边栏） ============ */
+/* ============ task pane(add-in sidebar) ============ */
 .sidebar{width:380px;flex-shrink:0;border-left:1px solid var(--line);background:#fff;display:flex;flex-direction:column;transition:width .2s ease,flex-basis .2s ease;flex-basis:380px;z-index:10}.sidebar.collapsed{width:0;flex-basis:0;border:0;overflow:hidden}
 .side-head{height:57px;display:flex;align-items:center;padding:0 15px;border-bottom:1px solid var(--line);gap:9px;background:#fbfcfe;flex-shrink:0}.spark{width:27px;height:27px;border-radius:8px;background:linear-gradient(145deg,#4b91ef,#2057bb);color:#fff;display:grid;place-items:center;font-size:15px}.side-title{font-weight:700;font-size:14px}.side-sub{font-size:9px;color:#93a0af;margin-top:1px}.sync{margin-left:auto;font-size:10px;color:var(--green);background:var(--greenbg);padding:4px 8px;border-radius:20px}.close-side{border:0;background:transparent;color:#8a95a4;font-size:18px;cursor:pointer;margin-left:6px}
 .nav{display:flex;gap:2px;padding:8px 10px 0;border-bottom:1px solid var(--line);flex-shrink:0}.nav button{border:0;background:transparent;color:#778496;padding:9px 6px 11px;font-size:11px;cursor:pointer;border-bottom:2px solid transparent;flex:1}.nav button.active{color:#2168c8;border-color:#2876d7;font-weight:650}
@@ -127,190 +127,190 @@ body.reduce-anim .pop.open{animation:none}
 </head>
 <body>
 <div class="app">
- <header class="titlebar"><div class="outlook-mark">O</div><div class="brand">Outlook</div><div class="search">⌕　搜索邮件、人员和文件</div><div class="topright"><span>帮助</span><span>设置</span><span>账户　●</span></div></header>
- <div class="toolbar"><span class="primary">＋ 新建邮件</span><span>删除</span><span>归档</span><span>标记为未读</span><span>移动到</span><span>筛选</span><button class="addin-cmd" id="addinCmd" title="显示 / 隐藏 MailPet 任务窗格（Outlook 加载项命令）"><span class="mark">✦</span>MailPet</button></div>
+ <header class="titlebar"><div class="outlook-mark">O</div><div class="brand">Outlook</div><div class="search">⌕ Search mail, people and files</div><div class="topright"><span>Help</span><span>Settings</span><span>Account ●</span></div></header>
+ <div class="toolbar"><span class="primary">+ New mail</span><span>Delete</span><span>Archive</span><span>Mark unread</span><span>Move to</span><span>Filter</span><button class="addin-cmd" id="addinCmd" title="display / hide MailPet task pane(Outlook add-in command)"><span class="mark">✦</span>MailPet</button></div>
  <main class="workspace" id="workspace">
-  <aside class="folders"><div class="folder-head">收藏夹</div><div class="folder active">▣　收件箱 <span class="count">12</span></div><div class="folder">✉　草稿</div><div class="folder">↗　已发送邮件</div><div class="folder">⌫　已删除邮件</div><div class="folder-head" style="margin-top:28px">文件夹</div><div class="folder">▸　课程</div><div class="folder">▸　项目协作</div><div class="folder">▸　订阅通知</div></aside>
-  <section class="mail-list"><div class="list-head"><h2>收件箱</h2><div class="list-tabs"><b>重点</b><span>其他</span><span style="margin-left:auto">筛选⌄</span></div></div>
-   <div class="mail-item selected" data-mail="assignment"><span class="mail-sender">Prof. Chen</span><span class="mail-time">09:42</span><div class="mail-subject">Assignment 2 – Submission reminder</div><div class="mail-snippet">请在 11 月 15 日前提交作业…</div></div>
-   <div class="mail-item" data-mail="project"><span class="mail-sender">Project Team</span><span class="mail-time">昨天</span><div class="mail-subject">Updated dataset for group report</div><div class="mail-snippet">附件已更新，请检查最终数据…</div></div>
-   <div class="mail-item" data-mail="seminar"><span class="mail-sender">Data Science Office</span><span class="mail-time">周五</span><div class="mail-subject">Seminar registration</div><div class="mail-snippet">请确认是否参加下周研讨会…</div></div>
-   <div class="mail-item" data-mail="library"><span class="mail-sender">Library Services</span><span class="mail-time">周四</span><div class="mail-subject">Book return notice</div><div class="mail-snippet">借阅书籍即将到期…</div></div>
-   <div class="mail-item" data-mail="slides"><span class="mail-sender">Teaching Assistant</span><span class="mail-time">周三</span><div class="mail-subject">Week 7 slides uploaded</div><div class="mail-snippet">本周课件已上传至课程平台…</div></div>
+  <aside class="folders"><div class="folder-head">Favorites</div><div class="folder active">▣ Inbox <span class="count">12</span></div><div class="folder">✉ Drafts</div><div class="folder">↗ Sent Items</div><div class="folder">⌫ Deleted</div><div class="folder-head" style="margin-top:28px">Folders</div><div class="folder">▸ Courses</div><div class="folder">▸ Projects</div><div class="folder">▸ Subscriptions</div></aside>
+  <section class="mail-list"><div class="list-head"><h2>Inbox</h2><div class="list-tabs"><b>Focused</b><span>Other</span><span style="margin-left:auto">Filter⌄</span></div></div>
+   <div class="mail-item selected" data-mail="assignment"><span class="mail-sender">Prof. Chen</span><span class="mail-time">09:42</span><div class="mail-subject">Assignment 2 – Submission reminder</div><div class="mail-snippet">Please submit the assignment by Nov 15…</div></div>
+   <div class="mail-item" data-mail="project"><span class="mail-sender">Project Team</span><span class="mail-time">Yesterday</span><div class="mail-subject">Updated dataset for group report</div><div class="mail-snippet">Attachment updated; please check the final numbers…</div></div>
+   <div class="mail-item" data-mail="seminar"><span class="mail-sender">Data Science Office</span><span class="mail-time">Fri</span><div class="mail-subject">Seminar registration</div><div class="mail-snippet">Please confirm whether you’ll join next week’ seminar…</div></div>
+   <div class="mail-item" data-mail="library"><span class="mail-sender">Library Services</span><span class="mail-time">Thu</span><div class="mail-subject">Book return notice</div><div class="mail-snippet">Your borrowed book is due soon…</div></div>
+   <div class="mail-item" data-mail="slides"><span class="mail-sender">Teaching Assistant</span><span class="mail-time">Wed</span><div class="mail-subject">Week 7 slides uploaded</div><div class="mail-snippet">This week’ slides are on the course platform…</div></div>
   </section>
   <section class="reading" id="reading">
-   <h1 id="emailSubject">Assignment 2 – Submission reminder</h1><div class="sender-line" id="emailSender">Chen Wei &lt;chen@university.edu&gt;　·　收件人：你　·　今天 09:42</div>
+   <h1 id="emailSubject">Assignment 2 – Submission reminder</h1><div class="sender-line" id="emailSender">Chen Wei &lt;chen@university.edu&gt; · To: you · Today 09:42</div>
    <p>Hi everyone,</p><p id="emailBody">Please submit Assignment 2 by November 15.<br>Make sure your report includes the analysis and references.</p>
-   <p>Best regards,<br>Chen Wei</p><div class="email-quote" id="emailQuote">“Please submit Assignment 2 by November 15.”</div>
-   <div class="attachment">▧　Assignment_2_Instructions.pdf　　查看附件（附件未分析）</div>
+   <p>Best regards,<br>Chen Wei</p><div class="email-quote" id="emailQuote">"Please submit Assignment 2 by November 15."</div>
+   <div class="attachment">▧ Assignment_2_Instructions.pdf  View attachment (notanalysis)</div>
   </section>
 
-  <!-- 桌宠：五业务状态（待机 / 待确认 / 临期 / 成功 / 免打扰） -->
-  <button class="pet" id="pet" data-state="pending" aria-label="MailPet 桌宠：3 项待确认，单击打开功能面板，右键更多选项"><span class="pet-face" id="petFace">✦</span><small>AI</small><span class="pet-badge" id="petBadge">3</span></button>
-  <div class="pet-tip" id="petTip">3 项待确认 · 单击打开功能面板</div>
+  <!-- Pet: five business states (Idle / Pending / Due soon / Success / DND) -->
+  <button class="pet" id="pet" data-state="pending" aria-label="MailPet pet: 3 items pending — click to open the panel, right-click for more"><span class="pet-face" id="petFace">✦</span><small>AI</small><span class="pet-badge" id="petBadge">3</span></button>
+  <div class="pet-tip" id="petTip">3 items pending · click to open the panel</div>
 
-  <!-- 右键菜单 -->
+  <!-- right-click menu -->
   <div class="pet-menu" id="petMenu" role="menu">
-   <button id="menuPop">✦　打开功能面板</button>
-   <button id="menuPane">▤　打开完整面板</button>
-   <button id="menuDnd">◐　开启免打扰</button>
-   <button id="menuSnooze">◷　稍后提醒</button>
-   <button data-open="settings">⚙　设置</button>
+   <button id="menuPop">✦ Open the panel</button>
+   <button id="menuPane">▤ Open full panel</button>
+   <button id="menuDnd">◐ Turn on DND</button>
+   <button id="menuSnooze">◷ Remind later</button>
+   <button data-open="settings">⚙ Settings</button>
    <hr>
-   <button id="menuHide">⛶　隐藏到托盘</button>
+   <button id="menuHide">⛶ Hide to tray</button>
   </div>
 
-  <!-- 点击桌宠 → 功能面板（宫格 → 详情 两级交互） -->
-  <div class="pop" id="pop" role="dialog" aria-label="MailPet 功能面板" aria-modal="false">
+  <!-- Click the pet → Panel (launcher → detail, two-level nav) -->
+  <div class="pop" id="pop" role="dialog" aria-label="MailPet panel" aria-modal="false">
    <div class="pop-head">
-    <button class="pop-back" id="popBack" aria-label="返回功能菜单">‹</button>
+    <button class="pop-back" id="popBack" aria-label="Back to the menu">‹</button>
     <div class="spark">✦</div>
-    <div><div class="pop-title" id="popTitle">MailPet · 快捷功能</div><div class="pop-date">11 月 9 日 周一 · 最近同步 09:42</div></div>
-    <span class="sync" id="popSync">● 已同步</span>
-    <button class="pop-close" id="popClose" aria-label="关闭功能面板">×</button>
+    <div><div class="pop-title" id="popTitle">MailPet · Quick actions</div><div class="pop-date">Monday, Nov 9 · Last sync 09:42</div></div>
+    <span class="sync" id="popSync">● Synced</span>
+    <button class="pop-close" id="popClose" aria-label="Close the panel">×</button>
    </div>
    <div class="pop-body" id="popBody">
-    <!-- L0 功能宫格 -->
-    <section class="pv active" id="pv-launch" aria-label="功能菜单">
+    <!-- L0 launcher grid -->
+    <section class="pv active" id="pv-launch" aria-label="feature menu">
      <div class="pl-grid">
-      <button class="pl-tile" data-pv="today"><span class="pl-ic" style="background:linear-gradient(145deg,#4b91ef,#2057bb)">◷</span><b>今日面板</b><span class="pl-d">概览、临期与待确认</span><span class="pl-badge" id="tileToday">3</span></button>
-      <button class="pl-tile" data-pv="mail"><span class="pl-ic" style="background:linear-gradient(145deg,#2f9de4,#0f6cb4)">✉</span><b>邮件重点</b><span class="pl-d">AI 标出需要关注的邮件</span><span class="pl-badge" id="tileMail">4</span></button>
-      <button class="pl-tile t-urgent" data-pv="tasks"><span class="pl-ic" style="background:linear-gradient(145deg,#8d6fd0,#5f3fa8)">☑</span><b>当前任务</b><span class="pl-d">待确认 · 待处理 · 等待条件</span><span class="pl-badge" id="tileTasks">1</span></button>
-      <button class="pl-tile" id="tileDnd" data-pv="dnd"><span class="pl-ic" style="background:linear-gradient(145deg,#a7b3c2,#78889b)">◐</span><b>免打扰</b><span class="pl-d" id="tileDndDesc">普通提醒静默，仅角标</span></button>
-      <button class="pl-tile" data-pv="set"><span class="pl-ic" style="background:linear-gradient(145deg,#7e8ba0,#566274)">⚙</span><b>系统设置</b><span class="pl-d">提醒、显示与数据</span></button>
-      <button class="pl-tile dash" id="tilePane"><span class="pl-ic" style="background:#fff;border:1px solid #cfe0f5;color:#2467c9">▤</span><b>完整面板</b><span class="pl-d">在任务窗格打开全部功能</span></button>
+      <button class="pl-tile" data-pv="today"><span class="pl-ic" style="background:linear-gradient(145deg,#4b91ef,#2057bb)">◷</span><b>Today</b><span class="pl-d">Overview, due-soon & pending</span><span class="pl-badge" id="tileToday">3</span></button>
+      <button class="pl-tile" data-pv="mail"><span class="pl-ic" style="background:linear-gradient(145deg,#2f9de4,#0f6cb4)">✉</span><b>Mail highlights</b><span class="pl-d">AI Emails the AI flags for you</span><span class="pl-badge" id="tileMail">4</span></button>
+      <button class="pl-tile t-urgent" data-pv="tasks"><span class="pl-ic" style="background:linear-gradient(145deg,#8d6fd0,#5f3fa8)">☑</span><b>Current tasks</b><span class="pl-d">Pending · To do · Waiting</span><span class="pl-badge" id="tileTasks">1</span></button>
+      <button class="pl-tile" id="tileDnd" data-pv="dnd"><span class="pl-ic" style="background:linear-gradient(145deg,#a7b3c2,#78889b)">◐</span><b>DND</b><span class="pl-d" id="tileDndDesc">normal alerts silent, badge only</span></button>
+      <button class="pl-tile" data-pv="set"><span class="pl-ic" style="background:linear-gradient(145deg,#7e8ba0,#566274)">⚙</span><b>Settings</b><span class="pl-d">Reminders, display & data</span></button>
+      <button class="pl-tile dash" id="tilePane"><span class="pl-ic" style="background:#fff;border:1px solid #cfe0f5;color:#2467c9">▤</span><b>full panel</b><span class="pl-d">Open everything in the task pane</span></button>
      </div>
-     <div class="pl-more" style="cursor:default">桌面常驻入口：单击桌宠随时打开 <span style="color:#9aa6b4">v2.1</span></div>
+     <div class="pl-more" style="cursor:default">Always available: click the pet anytime <span style="color:#9aa6b4">v2.1</span></div>
     </section>
-    <!-- L1 今日面板 -->
-    <section class="pv" id="pv-today" aria-label="今日面板详情">
-     <div class="pop-banner urgent" id="popUrgentBanner">⏰ <b>1 项任务将在 24 小时内到期</b> · 建议现在处理</div>
-     <div class="pop-banner dnd" id="popDndBanner" style="display:none">◐ <b>免打扰中</b> · 普通提醒静默，仅更新角标</div>
-     <div class="pop-banner idle" id="popIdleBanner" style="display:none">✓ 暂无临期与待确认事项</div>
+    <!-- L1 Today -->
+    <section class="pv" id="pv-today" aria-label="Today">
+     <div class="pop-banner urgent" id="popUrgentBanner">⏰ <b>1 task due within 24 hours</b> · handle it now</div>
+     <div class="pop-banner dnd" id="popDndBanner" style="display:none">◐ <b>DND on</b> · normal alerts silent, badge only</div>
+     <div class="pop-banner idle" id="popIdleBanner" style="display:none">✓ Nothing due or pending</div>
      <div class="pop-stats">
-      <div class="pop-stat amber"><b id="popPending">3</b><span>待确认</span></div>
-      <div class="pop-stat blue"><b>8</b><span>待处理</span></div>
-      <div class="pop-stat purple"><b>2</b><span>等待条件</span></div>
-      <div class="pop-stat green"><b id="popDone">12</b><span>已完成</span></div>
+      <div class="pop-stat amber"><b id="popPending">3</b><span>Pending</span></div>
+      <div class="pop-stat blue"><b>8</b><span>To do</span></div>
+      <div class="pop-stat purple"><b>2</b><span>Waiting</span></div>
+      <div class="pop-stat green"><b id="popDone">12</b><span>Done</span></div>
      </div>
-     <div class="pop-sec">临期任务 <span class="tag red">24 小时内</span></div>
+     <div class="pop-sec">Due-soon tasks <span class="tag red">within 24h</span></div>
      <div class="pop-card" id="popUrgentCard">
-      <div class="task-top"><div class="task-name">小组报告：提交最终版本</div><span class="tag red">临期</span></div>
-      <div class="task-meta">今天 17:00 · Project Team · 剩余约 7 小时</div>
-      <div class="row-actions"><button class="btn soft" onclick="openTask('project')">查看任务</button><button class="btn" onclick="snooze()">稍后提醒</button><button class="btn primary" onclick="completeUrgent()">完成</button></div>
+      <div class="task-top"><div class="task-name">Group report: submit final version</div><span class="tag red">Due soon</span></div>
+      <div class="task-meta">Today 17:00 · Project Team · about 7 hours left</div>
+      <div class="row-actions"><button class="btn soft" onclick="openTask('project')">View task</button><button class="btn" onclick="snooze()">Remind later</button><button class="btn primary" onclick="completeUrgent()">Done</button></div>
      </div>
-     <div class="empty" id="popUrgentEmpty" style="display:none">暂无 24 小时内到期的任务</div>
-     <div class="pop-sec">待确认事项 <button class="link" onclick="openPane('tasks')">查看全部 →</button></div>
+     <div class="empty" id="popUrgentEmpty" style="display:none">None within 24hduetask</div>
+     <div class="pop-sec">Pending <button class="link" onclick="openPane('tasks')">View all →</button></div>
      <div class="pop-card" id="popPendingCard">
-      <div class="task-top"><div class="task-name">Assignment 2 – Submission reminder</div><span class="tag amber">待确认</span></div>
-      <div class="task-meta">确认截止日期与预计耗时 · Prof. Chen</div>
-      <div class="row-actions"><button class="btn primary" onclick="confirmTask()">确认任务</button><button class="btn" onclick="openTask('assignment')">查看依据</button></div>
+      <div class="task-top"><div class="task-name">Assignment 2 – Submission reminder</div><span class="tag amber">Pending</span></div>
+      <div class="task-meta">Confirm the deadline and estimated effort · Prof. Chen</div>
+      <div class="row-actions"><button class="btn primary" onclick="confirmTask()">Confirm task</button><button class="btn" onclick="openTask('assignment')">View evidence</button></div>
      </div>
-     <div class="empty" id="popPendingEmpty" style="display:none">没有等待确认的事项</div>
-     <div class="pop-sec">等待条件</div>
-     <div class="pop-wait">⏳ 等待同学提供最终数据附件 · 明天 10:00 检查 · <button class="link" onclick="openPane('tasks')">管理</button></div>
+     <div class="empty" id="popPendingEmpty" style="display:none">Nothing waiting for confirmation</div>
+     <div class="pop-sec">Waiting</div>
+     <div class="pop-wait">⏳ Waiting for a teammate’ final data attachment · Tomorrow 10:00 check · <button class="link" onclick="openPane('tasks')">Manage</button></div>
     </section>
-    <!-- L1 邮件重点 -->
-    <section class="pv" id="pv-mail" aria-label="邮件重点详情">
-     <div class="subtle" style="margin-bottom:9px">AI 从收件箱标出的重点邮件与原因；点击卡片查看原文、证据与任务。</div>
+    <!-- L1 Mail highlights -->
+    <section class="pv" id="pv-mail" aria-label="Mail highlights">
+     <div class="subtle" style="margin-bottom:9px">AI Emails the AI flagged from your inbox and why; click a card to open the email, evidence and tasks.</div>
      <div id="hlList"></div>
-     <div class="pl-more" onclick="openPane('mail')">其余 1 封未识别到明确任务 · 查看全部邮件 <span>→</span></div>
+     <div class="pl-more" onclick="openPane('mail')">remaining 1 emailno clear task detected · View allMail <span>→</span></div>
     </section>
-    <!-- L1 当前任务 -->
-    <section class="pv" id="pv-tasks" aria-label="当前任务详情">
-     <div class="subtle" style="margin-bottom:4px">任务状态独立于邮件已读；完成前持续保留。每个行动项单独确认。</div>
+    <!-- L1 Current tasks -->
+    <section class="pv" id="pv-tasks" aria-label="Current tasks">
+     <div class="subtle" style="margin-bottom:4px">Task status is independent of email read state; tasks stay until done. Each action item is confirmed individually.</div>
      <div id="popTaskList"></div>
     </section>
-    <!-- L1 免打扰 -->
-    <section class="pv" id="pv-dnd" aria-label="免打扰详情">
-     <div class="pop-banner dnd" id="dndStateBanner">◐ <b>当前：关闭</b> · 开启后普通提醒静默</div>
-     <div class="setting-row"><div><b>立即开启免打扰</b><small>不播放声音、不主动弹窗</small></div><button class="toggle" id="popDndToggle" onclick="toggleDnd()"></button></div>
-     <div class="field"><label>自动开启时段</label><select id="dndSchedule"><option>手动开启（不自动）</option><option>22:00 – 08:00</option><option>12:30 – 13:30</option><option>自定义…</option></select></div>
-     <div class="setting-row"><div><b>临期任务穿透提醒</b><small>免打扰中仍提醒 24 小时内到期的已确认任务</small></div><button class="toggle" id="dndPierce" onclick="toggleSetting(this)"></button></div>
-     <div class="subtle" style="margin-top:9px">变更即时生效；桌宠会同步显示免打扰状态。</div>
+    <!-- L1 DND -->
+    <section class="pv" id="pv-dnd" aria-label="Do Not Disturb">
+     <div class="pop-banner dnd" id="dndStateBanner">◐ <b>Currently off</b> · Normal alerts go silent when on</div>
+     <div class="setting-row"><div><b>Turn on DND now</b><small>no sound, no popups</small></div><button class="toggle" id="popDndToggle" onclick="toggleDnd()"></button></div>
+     <div class="field"><label>Auto schedule</label><select id="dndSchedule"><option>Manual (no schedule)</option><option>22:00 – 08:00</option><option>12:30 – 13:30</option><option>Custom…</option></select></div>
+     <div class="setting-row"><div><b>Due-soon override</b><small>Still remind confirmed tasks due within 24h during DND</small></div><button class="toggle" id="dndPierce" onclick="toggleSetting(this)"></button></div>
+     <div class="subtle" style="margin-top:9px">Changes apply instantly; the pet reflects the DND state.</div>
     </section>
-    <!-- L1 系统设置 -->
-    <section class="pv" id="pv-set" aria-label="系统设置详情">
-     <div class="setting-row"><div><b>免打扰</b><small>普通提醒静默，仅更新角标</small></div><button class="toggle" id="popSetDnd" onclick="toggleDnd()"></button></div>
-     <div class="setting-row"><div><b>减少动画</b><small>关闭脉动与弹出动画</small></div><button class="toggle" id="popSetAnim" onclick="toggleAnim(this)"></button></div>
-     <div class="setting-row"><div><b>桌宠置顶</b><small>仅在 Outlook 窗口内显示</small></div><button class="toggle on" onclick="toggleSetting(this)"></button></div>
-     <div class="pl-more" onclick="openPane('settings')">邮箱连接、模型状态与数据管理 · 更多设置 <span>→</span></div>
+    <!-- L1 Settings -->
+    <section class="pv" id="pv-set" aria-label="Settings">
+     <div class="setting-row"><div><b>DND</b><small>normal alerts silent, badge only</small></div><button class="toggle" id="popSetDnd" onclick="toggleDnd()"></button></div>
+     <div class="setting-row"><div><b>Reduce motion</b><small>turn off pulse and pop-in</small></div><button class="toggle" id="popSetAnim" onclick="toggleAnim(this)"></button></div>
+     <div class="setting-row"><div><b>Keep pet on top</b><small>only in Outlook inside the window</small></div><button class="toggle on" onclick="toggleSetting(this)"></button></div>
+     <div class="pl-more" onclick="openPane('settings')">Connection, model and data · More settings <span>→</span></div>
     </section>
    </div>
    <div class="pop-foot">
-    <button class="btn primary" id="popCtxBtn">打开完整面板</button>
-    <button class="btn" id="popDndBtn" onclick="toggleDnd()">免打扰</button>
-    <button class="btn" onclick="openPane('settings')">设置</button>
+    <button class="btn primary" id="popCtxBtn">Open full panel</button>
+    <button class="btn" id="popDndBtn" onclick="toggleDnd()">DND</button>
+    <button class="btn" onclick="openPane('settings')">Settings</button>
    </div>
-   <div class="pop-hint" id="popHint">点击功能进入详情 · Esc 关闭 · Alt+P 快捷开关 · 右键桌宠更多选项</div>
+   <div class="pop-hint" id="popHint">Click a feature to open it · Esc closes · Alt+P toggles · Right-click the pet for more</div>
   </div>
 
   <aside class="sidebar" id="sidebar">
-   <div class="side-head"><div class="spark">✦</div><div><div class="side-title">MailPet</div><div class="side-sub">Outlook 加载项 · 任务窗格</div></div><span class="sync" id="syncBadge">● 已同步</span><button class="close-side" id="closeSide" title="收起任务窗格">×</button></div>
-   <nav class="nav" id="nav"><button class="active" data-view="today">今日</button><button data-view="mail">邮件</button><button data-view="tasks">任务</button><button data-view="rules">规则</button><button data-view="validation">验证</button><button data-view="settings">设置</button></nav>
+   <div class="side-head"><div class="spark">✦</div><div><div class="side-title">MailPet</div><div class="side-sub">Outlook add-in · task pane</div></div><span class="sync" id="syncBadge">● Synced</span><button class="close-side" id="closeSide" title="Collapse the task pane">×</button></div>
+   <nav class="nav" id="nav"><button class="active" data-view="today">Today</button><button data-view="mail">Mail</button><button data-view="tasks">task</button><button data-view="rules">rule</button><button data-view="validation">validation</button><button data-view="settings">Settings</button></nav>
    <div class="side-content">
     <section class="view active" id="view-today">
-     <div class="view-title"><h2>今日面板</h2><span class="tag green">实时状态</span></div><div class="subtle">周一，11 月 9 日 · 最近同步 09:42</div>
-     <div class="stats"><div class="stat amber"><span>待确认</span><strong id="pendingCount">03</strong></div><div class="stat blue"><span>待处理</span><strong>08</strong></div><div class="stat purple"><span>等待条件</span><strong>02</strong></div><div class="stat green"><span>已完成</span><strong id="doneCount">12</strong></div></div>
-     <div class="section-title">临期任务 <span class="tag red">未来 24 小时</span></div>
-     <div class="task-card" id="todayUrgent"><div class="task-top"><div class="task-name">小组报告：提交最终版本</div><span class="tag red">临期</span></div><div class="task-meta">今天 17:00 · Project Team</div><div class="row-actions"><button class="btn soft" onclick="openTask('project')">查看任务</button><button class="btn" onclick="snooze()">稍后提醒</button></div></div>
-     <div class="section-title">待确认事项 <button class="link" onclick="showView('tasks')">查看全部 →</button></div>
-     <div class="task-card" id="todayAssignment"><div class="task-top"><div class="task-name">Assignment 2 – Submission reminder</div><span class="tag amber">待确认</span></div><div class="task-meta">确认截止日期与预计耗时 · Prof. Chen</div><div class="row-actions"><button class="btn primary" onclick="confirmTask()">确认任务</button><button class="btn" onclick="openTask('assignment')">查看依据</button></div></div>
-     <div class="section-title">等待条件</div><div class="task-card"><div class="task-name">等待同学提供最终数据附件</div><div class="task-meta">下次检查：明天 10:00 · 保留截止风险提示</div></div>
-     <div class="section-title">最近完成 <span class="subtle">12 项</span></div><div class="task-card"><div class="task-name">完成 Week 7 课件复习</div><div class="task-meta">今天 08:30 · 已完成</div></div>
+     <div class="view-title"><h2>Today</h2><span class="tag green">live</span></div><div class="subtle">Monday, Nov 9 · Last sync 09:42</div>
+     <div class="stats"><div class="stat amber"><span>Pending</span><strong id="pendingCount">03</strong></div><div class="stat blue"><span>To do</span><strong>08</strong></div><div class="stat purple"><span>Waiting</span><strong>02</strong></div><div class="stat green"><span>Done</span><strong id="doneCount">12</strong></div></div>
+     <div class="section-title">Due-soon tasks <span class="tag red">future 24 hours</span></div>
+     <div class="task-card" id="todayUrgent"><div class="task-top"><div class="task-name">Group report: submit final version</div><span class="tag red">Due soon</span></div><div class="task-meta">Today 17:00 · Project Team</div><div class="row-actions"><button class="btn soft" onclick="openTask('project')">View task</button><button class="btn" onclick="snooze()">Remind later</button></div></div>
+     <div class="section-title">Pending <button class="link" onclick="showView('tasks')">View all →</button></div>
+     <div class="task-card" id="todayAssignment"><div class="task-top"><div class="task-name">Assignment 2 – Submission reminder</div><span class="tag amber">Pending</span></div><div class="task-meta">Confirm the deadline and estimated effort · Prof. Chen</div><div class="row-actions"><button class="btn primary" onclick="confirmTask()">Confirm task</button><button class="btn" onclick="openTask('assignment')">View evidence</button></div></div>
+     <div class="section-title">Waiting</div><div class="task-card"><div class="task-name">Waiting for a teammate’ final data attachment</div><div class="task-meta">Next check: Tomorrow 10:00 · deadline-risk hint kept</div></div>
+     <div class="section-title">Recently done <span class="subtle">12 items</span></div><div class="task-card"><div class="task-name">Done Week 7 lecture review</div><div class="task-meta">Today 08:30 · Done</div></div>
     </section>
     <section class="view" id="view-mail">
-     <div class="view-title"><h2>邮件</h2><span class="tag green">只读接入</span></div><div class="subtle">使用 Outlook 原生邮件列表；在此查看 AI 分析和原文证据。</div>
-     <input class="mail-search" placeholder="搜索当前邮件 / 发件人 / 主题" oninput="filterMails(this.value)">
-     <div class="mini-mail selected" data-mail="assignment" onclick="selectMail('assignment')"><b>Prof. Chen · Assignment 2 – Submission reminder</b><p>摘要：请在 11 月 15 日前提交作业。 · 1 个行动项</p></div>
-     <div class="mini-mail" data-mail="project" onclick="selectMail('project')"><b>Project Team · Updated dataset</b><p>摘要：最终数据文件已更新，等待组员提供附件。 · 2 个行动项</p></div>
-     <div class="mini-mail" data-mail="seminar" onclick="selectMail('seminar')"><b>Data Science Office · Seminar registration</b><p>摘要：邀请参加下周研讨会。 · 1 个候选行动项</p></div>
-     <div class="mini-mail" data-mail="library" onclick="selectMail('library')"><b>Library Services · Book return notice</b><p>摘要：图书即将到期。 · 1 个行动项</p></div>
-     <div class="mini-mail" data-mail="slides" onclick="selectMail('slides')"><b>Teaching Assistant · Week 7 slides</b><p>摘要：课件已上传。 · 未识别到明确任务</p></div>
-     <div class="section-title">当前邮件 AI 分析</div><div class="panel-card"><div class="task-top"><b id="mailAnalysisTitle">提交 Assignment 2</b><span class="tag amber" id="mailAnalysisStatus">待确认</span></div><p class="subtle" id="mailSummary">教授提醒学生在 11 月 15 日前提交 Assignment 2。</p><div class="status-line"><span>截止时间</span><b id="mailDeadline">11 月 15 日 · 日期精度</b></div><div class="status-line"><span>字段来源</span><span class="subtle">原文支持</span></div><div class="evidence" id="mailEvidence">“Please submit <mark>Assignment 2 by November 15</mark>.”<br><button class="link" onclick="toast('已定位到 Outlook 阅读区域中的原文段落')">查看原文位置 →</button></div><div class="row-actions"><button class="btn primary" onclick="confirmTask()">确认任务</button><button class="btn" onclick="editTask()">修改任务</button><button class="btn" onclick="showView('rules')">纠正判断</button></div></div>
+     <div class="view-title"><h2>Mail</h2><span class="tag green">Read-only access</span></div><div class="subtle">Use Outlook native mail list; see AI analysis and source evidence.</div>
+     <input class="mail-search" placeholder="Search emails / sender / subject" oninput="filterMails(this.value)">
+     <div class="mini-mail selected" data-mail="assignment" onclick="selectMail('assignment')"><b>Prof. Chen · Assignment 2 – Submission reminder</b><p>Summary: Please submit the assignment by Nov 15. · 1 action item</p></div>
+     <div class="mini-mail" data-mail="project" onclick="selectMail('project')"><b>Project Team · Updated dataset</b><p>Summary: final data updated; waiting for a teammate’ attachment. · 2 action items</p></div>
+     <div class="mini-mail" data-mail="seminar" onclick="selectMail('seminar')"><b>Data Science Office · Seminar registration</b><p>Summary: invited to next week’ seminar. · 1 candidate action item</p></div>
+     <div class="mini-mail" data-mail="library" onclick="selectMail('library')"><b>Library Services · Book return notice</b><p>Summary: book due soon. · 1 action item</p></div>
+     <div class="mini-mail" data-mail="slides" onclick="selectMail('slides')"><b>Teaching Assistant · Week 7 slides</b><p>Summary: slides uploaded. · No clear task detected</p></div>
+     <div class="section-title">Current email AI analysis</div><div class="panel-card"><div class="task-top"><b id="mailAnalysisTitle">Submit Assignment 2</b><span class="tag amber" id="mailAnalysisStatus">Pending</span></div><p class="subtle" id="mailSummary">The professor asks students to submit Assignment 2 by Nov 15.</p><div class="status-line"><span>Deadline</span><b id="mailDeadline">Nov 15 · date-level precision</b></div><div class="status-line"><span>Field source</span><span class="subtle">From email text</span></div><div class="evidence" id="mailEvidence">"Please submit <mark>Assignment 2 by November 15</mark>."<br><button class="link" onclick="toast('Located the quote in the Outlook reading pane')">View in email →</button></div><div class="row-actions"><button class="btn primary" onclick="confirmTask()">Confirm task</button><button class="btn" onclick="editTask()">Edit task</button><button class="btn" onclick="showView('rules')">Correct judgment</button></div></div>
     </section>
     <section class="view" id="view-tasks">
-     <div class="view-title"><h2>任务管理</h2><button class="btn" onclick="newTask()">＋ 手动建任务</button></div><div class="subtle">任务状态独立于邮件已读状态。每个行动项单独确认。</div>
-     <div class="list-tabs" style="margin:15px 0 12px;gap:12px;flex-wrap:wrap"><button class="link" onclick="filterTasks('all')">全部</button><button class="link" onclick="filterTasks('pending')">待确认</button><button class="link" onclick="filterTasks('todo')">待处理</button><button class="link" onclick="filterTasks('waiting')">等待条件</button><button class="link" onclick="filterTasks('done')">已完成</button></div>
+     <div class="view-title"><h2>Tasks</h2><button class="btn" onclick="newTask()">+ New task</button></div><div class="subtle">Task status is independent of email read state. Each action item is confirmed individually.</div>
+     <div class="list-tabs" style="margin:15px 0 12px;gap:12px;flex-wrap:wrap"><button class="link" onclick="filterTasks('all')">All</button><button class="link" onclick="filterTasks('pending')">Pending</button><button class="link" onclick="filterTasks('todo')">To do</button><button class="link" onclick="filterTasks('waiting')">Waiting</button><button class="link" onclick="filterTasks('done')">Done</button></div>
      <div id="taskList">
-      <div class="task-card" data-status="pending"><div class="task-top"><div class="task-name">提交 Assignment 2</div><span class="tag amber">待确认</span></div><div class="task-meta">Prof. Chen · 11 月 15 日（日期精度）</div><div class="row-actions"><button class="btn primary" onclick="confirmTask()">确认</button><button class="btn" onclick="editTask()">编辑</button><button class="btn" onclick="selectMail('assignment')">原邮件</button></div></div>
-      <div class="task-card" data-status="todo" id="taskUrgentRow"><div class="task-top"><div class="task-name">小组报告：提交最终版本</div><span class="tag red" id="taskUrgentTag">临期</span></div><div class="task-meta">Project Team · 今天 17:00</div><div class="row-actions"><button class="btn" onclick="openTask('project')">查看</button><button class="btn" onclick="snooze()">稍后提醒</button><button class="btn primary" onclick="completeTask(this)">完成</button></div></div>
-      <div class="task-card" data-status="waiting"><div class="task-top"><div class="task-name">等待同学提供最终数据附件</div><span class="tag purple">等待条件</span></div><div class="task-meta">等待组员提供文件 · 明天 10:00 检查</div><div class="row-actions"><button class="btn" onclick="toast('打开等待条件编辑')">修改检查时间</button><button class="btn" onclick="selectMail('project')">原邮件</button></div></div>
-      <div class="task-card" data-status="todo"><div class="task-top"><div class="task-name">注册研究生研讨会</div><span class="tag blue">待处理</span></div><div class="task-meta">Data Science Office · 11 月 18 日</div><div class="row-actions"><button class="btn" onclick="selectMail('seminar')">查看邮件</button><button class="btn primary" onclick="completeTask(this)">完成</button></div></div>
+      <div class="task-card" data-status="pending"><div class="task-top"><div class="task-name">Submit Assignment 2</div><span class="tag amber">Pending</span></div><div class="task-meta">Prof. Chen · Nov 15(date-level precision)</div><div class="row-actions"><button class="btn primary" onclick="confirmTask()">Confirm</button><button class="btn" onclick="editTask()">Edit</button><button class="btn" onclick="selectMail('assignment')">Source email</button></div></div>
+      <div class="task-card" data-status="todo" id="taskUrgentRow"><div class="task-top"><div class="task-name">Group report: submit final version</div><span class="tag red" id="taskUrgentTag">Due soon</span></div><div class="task-meta">Project Team · Today 17:00</div><div class="row-actions"><button class="btn" onclick="openTask('project')">View</button><button class="btn" onclick="snooze()">Remind later</button><button class="btn primary" onclick="completeTask(this)">Done</button></div></div>
+      <div class="task-card" data-status="waiting"><div class="task-top"><div class="task-name">Waiting for a teammate’ final data attachment</div><span class="tag purple">Waiting</span></div><div class="task-meta">waiting for a teammate’ file · Tomorrow 10:00 check</div><div class="row-actions"><button class="btn" onclick="toast('Opens waiting-condition editor')">Edit check time</button><button class="btn" onclick="selectMail('project')">Source email</button></div></div>
+      <div class="task-card" data-status="todo"><div class="task-top"><div class="task-name">Register for the grad seminar</div><span class="tag blue">To do</span></div><div class="task-meta">Data Science Office · Nov 18</div><div class="row-actions"><button class="btn" onclick="selectMail('seminar')">View email</button><button class="btn primary" onclick="completeTask(this)">Done</button></div></div>
      </div>
     </section>
     <section class="view" id="view-rules">
-     <div class="view-title"><h2>纠正与规则</h2><span class="tag blue">用户授权</span></div><div class="subtle">纠正先作用于当前邮件；复用规则前必须预览影响范围。</div>
-     <div class="panel-card"><div class="section-title" style="margin-top:0">当前 AI 判断</div><div class="status-line"><span>是否需要处理</span><b>是 · 待确认</b></div><div class="status-line"><span>重要性</span><b>重要</b></div><div class="status-line"><span>任务内容</span><b>提交 Assignment 2</b></div><div class="status-line"><span>截止时间</span><b>11 月 15 日</b></div><button class="btn soft" onclick="openCorrection()">纠正当前邮件</button></div>
-     <div class="section-title">纠正规则创建</div><div class="field"><label>修改字段</label><select id="ruleField"><option>重要性</option><option>是否需要处理</option><option>适用对象</option><option>是否提示行动</option></select></div><div class="field"><label>修改为</label><select id="ruleValue"><option>普通</option><option>不需要处理</option><option>不适用于我</option><option>不提示行动</option></select></div>
-     <div class="section-title">适用范围</div><div class="choice selected" onclick="chooseScope(this,'仅当前邮件')"><b>仅当前邮件</b><small>不创建可复用规则，仅修改当前邮件。</small></div><div class="choice" onclick="chooseScope(this,'同一发件人')"><b>同一发件人</b><small>完整邮箱地址匹配，不使用显示名称。</small></div><div class="choice" onclick="chooseScope(this,'同一项目')"><b>同一项目</b><small>只匹配用户显式添加的项目标签。</small></div>
-     <div class="field"><label>项目标签（选择同一项目时使用）</label><select><option>未选择项目标签</option><option>课程：Data Mining</option><option>项目：小组报告</option></select></div>
-     <button class="btn primary" onclick="previewRule()">预览影响范围 →</button>
-     <div id="rulePreview" style="display:none;margin-top:14px"><div class="panel-card"><div class="section-title" style="margin-top:0">影响范围预览 <span class="tag amber">待确认</span></div><div class="subtle">本地样本 · 近 30 天 · 42 封邮件（不是整个邮箱总量）</div><div class="status-line"><span>匹配条件</span><b id="scopeLabel">仅当前邮件</b></div><div class="status-line"><span>预计受影响</span><b id="impactCount">1 封</b></div><div class="evidence">修改前：重要 / 需要提示行动<br>修改后：普通 / 不提示行动</div><div class="mini-mail"><b>课程通知：期中安排</b><p>当前判断：待处理 → 修改后：普通</p></div><div class="subtle">默认只对未来匹配邮件生效；历史邮件批量重算需另行确认。</div><div class="row-actions"><button class="btn" onclick="document.getElementById('rulePreview').style.display='none'">返回修改</button><button class="btn primary" onclick="enableRule()">确认启用规则</button></div></div></div>
-     <div class="section-title">已启用规则</div><div class="task-card"><div class="task-name">课程通知降为普通优先级</div><div class="task-meta">发件人：office@university.edu · 版本 2 · 仅未来邮件</div><div class="row-actions"><button class="btn" onclick="toast('规则差异已展示，可选择撤销')">查看历史</button><button class="btn danger" onclick="toast('已暂停规则（原型状态）')">暂停 / 撤销</button></div></div>
+     <div class="view-title"><h2>Corrections & Rules</h2><span class="tag blue">user consent</span></div><div class="subtle">Corrections apply to the current email first; preview the impact before reusing a rule.</div>
+     <div class="panel-card"><div class="section-title" style="margin-top:0">current AI judgment</div><div class="status-line"><span>Needs action?</span><b>Yes · pending</b></div><div class="status-line"><span>Importance</span><b>Important</b></div><div class="status-line"><span>Task</span><b>Submit Assignment 2</b></div><div class="status-line"><span>Deadline</span><b>Nov 15</b></div><button class="btn soft" onclick="openCorrection()">Correct this email</button></div>
+     <div class="section-title">Create a correction</div><div class="field"><label>Field</label><select id="ruleField"><option>Importance</option><option>Needs action?</option><option>Applies to</option><option>Action tip?</option></select></div><div class="field"><label>New value</label><select id="ruleValue"><option>Normal</option><option>No action needed</option><option>Not for me</option><option>Hide tip</option></select></div>
+     <div class="section-title">Scope</div><div class="choice selected" onclick="chooseScope(this,'This email only')"><b>This email only</b><small>No reusable rule — only this email changes.</small></div><div class="choice" onclick="chooseScope(this,'Same sender')"><b>Same sender</b><small>Matches the full email address, not the display name.</small></div><div class="choice" onclick="chooseScope(this,'Same project')"><b>Same project</b><small>Matches only project tags you added explicitly.</small></div>
+     <div class="field"><label>Project tag (used with Same project)</label><select><option>No project tag selected</option><option>Course: Data Mining</option><option>Project: Group report</option></select></div>
+     <button class="btn primary" onclick="previewRule()">Preview impact →</button>
+     <div id="rulePreview" style="display:none;margin-top:14px"><div class="panel-card"><div class="section-title" style="margin-top:0">Impact preview <span class="tag amber">Pending</span></div><div class="subtle">Local sample · last 30 days · 42 emails (not the whole mailbox)</div><div class="status-line"><span>Matches</span><b id="scopeLabel">This email only</b></div><div class="status-line"><span>Est. affected</span><b id="impactCount">1 email</b></div><div class="evidence">Before: Important / show action tip<br>After: Normal / Hide tip</div><div class="mini-mail"><b>Course notice: midterm schedule</b><p>Now: To do → After: Normal</p></div><div class="subtle">Applies to future matched emails only; bulk re-evaluating history needs a separate confirmation.</div><div class="row-actions"><button class="btn" onclick="document.getElementById('rulePreview').style.display='none'">Back to edit</button><button class="btn primary" onclick="enableRule()">Enable rule</button></div></div></div>
+     <div class="section-title">Enabled rules</div><div class="task-card"><div class="task-name">Course notices → Normal priority</div><div class="task-meta">From: office@university.edu · v2 · future only</div><div class="row-actions"><button class="btn" onclick="toast('Rule diffs shown; you can undo')">View history</button><button class="btn danger" onclick="toast('Rule paused (demo)')">pause / Undo</button></div></div>
     </section>
     <section class="view" id="view-validation">
-     <div class="view-title"><h2>效果验证</h2><span class="tag green">固定测试集</span></div><div class="subtle">回放使用已保存的基础 AI 输出，不重新生成模型结果。</div>
-     <div class="stats" style="margin-top:15px"><div class="stat green"><span>正确结果</span><strong id="passScore">8/10</strong></div><div class="stat green"><span>改善项</span><strong>+3</strong></div><div class="stat amber"><span>未受影响</span><strong>6</strong></div><div class="stat" style="color:var(--red)"><span>退化项</span><strong>1</strong></div></div>
-     <div class="section-title">启用前后对比 <button class="link" onclick="replay()">重新回放 ↻</button></div><div class="status-line"><span>原始 AI 输出</span><b>5 / 10</b></div><div class="progress"><span style="width:50%;background:#9aa9ba"></span></div><div class="status-line"><span>启用规则后</span><b style="color:var(--green)">8 / 10</b></div><div class="progress"><span style="width:80%"></span></div>
-     <div class="section-title">回放结果明细</div><div class="task-card"><div class="task-top"><b>改善 · 课程通知不再误报</b><span class="tag green">改善</span></div><div class="task-meta">规则：同一发件人 · 样本 03</div></div><div class="task-card"><div class="task-top"><b>一封含行动项邮件被忽略</b><span class="tag red">退化</span></div><div class="task-meta">建议缩小规则范围 · 样本 07</div></div><div class="task-card"><div class="task-top"><b>普通系统通知</b><span class="tag">未变化</span></div><div class="task-meta">没有规则命中 · 样本 09</div></div>
-     <div class="section-title">后续实际命中</div><div class="panel-card"><b style="font-size:12px">课程通知规则</b><p class="subtle">命中条件：发件人完整地址匹配。可继续纠正或暂停。</p><button class="btn" onclick="showView('rules')">管理规则</button></div>
+     <div class="view-title"><h2>Validation</h2><span class="tag green">Fixed test set</span></div><div class="subtle">Replays the saved baseline AI outputs; no model re-run.</div>
+     <div class="stats" style="margin-top:15px"><div class="stat green"><span>Correct</span><strong id="passScore">8/10</strong></div><div class="stat green"><span>Improved</span><strong>+3</strong></div><div class="stat amber"><span>Unaffected</span><strong>6</strong></div><div class="stat" style="color:var(--red)"><span>Worse</span><strong>1</strong></div></div>
+     <div class="section-title">Before / after <button class="link" onclick="replay()">Replay again ↻</button></div><div class="status-line"><span>Original AI output</span><b>5 / 10</b></div><div class="progress"><span style="width:50%;background:#9aa9ba"></span></div><div class="status-line"><span>With rule</span><b style="color:var(--green)">8 / 10</b></div><div class="progress"><span style="width:80%"></span></div>
+     <div class="section-title">Replay details</div><div class="task-card"><div class="task-top"><b>Improved · course notices no longer false-flagged</b><span class="tag green">Improved</span></div><div class="task-meta">rule: Same sender · Sample 03</div></div><div class="task-card"><div class="task-top"><b>An actionable email got missed</b><span class="tag red">worse</span></div><div class="task-meta">Suggest narrowing the rule scope · Sample 07</div></div><div class="task-card"><div class="task-top"><b>System notice</b><span class="tag">Unchanged</span></div><div class="task-meta">No rule hit · Sample 09</div></div>
+     <div class="section-title">Real-world hits</div><div class="panel-card"><b style="font-size:12px">course-notice rule</b><p class="subtle">Matches by full sender address. Keep correcting or pause anytime.</p><button class="btn" onclick="showView('rules')">Manage rules</button></div>
     </section>
     <section class="view" id="view-settings">
-     <div class="view-title"><h2>系统设置</h2><span class="tag blue">本地优先</span></div><div class="subtle">作为 Outlook 加载项运行：邮箱访问由 Outlook 授权，数据默认保存在本机。</div>
-     <div class="section-title">邮箱连接（加载项授权）</div><div class="panel-card"><div class="status-line"><span>连接状态</span><span class="tag green" id="connectionStatus">已授权 · 演示</span></div><div class="status-line"><span>授权方式</span><b>Outlook 宿主授权（Graph · Mail.Read 只读）</b></div><div class="subtle" style="margin-top:8px">应用不保存邮箱密码；只读取邮件，不改动服务器上的已读、删除或移动状态。</div><div class="row-actions"><button class="btn" onclick="toast('权限详情：Mail.Read 只读；可在 Outlook 加载项管理中撤销')">查看权限</button><button class="btn" onclick="toast('断开账号：确认后清理本地缓存与凭据引用')">断开账号</button></div></div>
-     <div class="section-title">同步范围</div><div class="panel-card"><div class="field"><label>初始同步时间范围</label><select><option>最近 30 天</option><option>最近 7 天</option><option>最近 90 天</option><option>自定义</option></select></div><div class="field"><label>最多同步邮件数</label><input value="500"></div><div class="subtle">只读同步：不改变服务器已读标记，不删除、不移动邮件。</div></div>
-     <div class="section-title">模型状态</div><div class="panel-card"><div class="status-line"><span>本地模型</span><span class="tag green">可用（原型）</span></div><div class="subtle">模型不可用时回退到手动处理，不自动切换云服务。</div></div>
-     <div class="section-title">提醒与桌宠</div>
-     <div class="setting-row"><div><b>免打扰</b><small>免打扰时不播放声音、不主动弹窗</small></div><button class="toggle" id="toggleDnd" onclick="toggleDnd()"></button></div>
-     <div class="setting-row"><div><b>桌宠置顶</b><small>仅在 Outlook 窗口内显示</small></div><button class="toggle on" onclick="toggleSetting(this)"></button></div>
-     <div class="setting-row" style="border-bottom:0"><div><b>减少动画</b><small>关闭脉动与弹出动画，降低动态效果</small></div><button class="toggle" id="toggleAnim" onclick="toggleAnim(this)"></button></div>
-     <div class="panel-card" style="margin-top:10px"><b style="font-size:12px">桌宠状态预览（演示工具）</b><div class="subtle" style="margin:5px 0 2px">切换查看五种业务状态的表现，对应需求 FR-07。</div><div class="state-demo" id="stateDemo"><button data-state="idle">待机</button><button data-state="pending" class="on">待确认</button><button data-state="urgent">临期</button><button data-state="success">成功</button><button data-state="dnd">免打扰</button></div></div>
-     <div class="section-title">数据与隐私</div><div class="panel-card"><div class="subtle">邮件缓存、任务、证据和规则默认保存在本机。日志不记录邮件正文、密码或令牌。</div><button class="btn danger" style="margin-top:12px" onclick="toast('将展示完整清理确认及关联数据范围')">清理本地数据</button></div>
+     <div class="view-title"><h2>Settings</h2><span class="tag blue">Local first</span></div><div class="subtle">as an Outlook add-in: mailbox access via Outlook consent; data stays local by default.</div>
+     <div class="section-title">Mailbox connection (add-in consent)</div><div class="panel-card"><div class="status-line"><span>Status</span><span class="tag green" id="connectionStatus">Authorized · demo</span></div><div class="status-line"><span>Consent via</span><b>Outlook host consent (Graph · Mail.Read read-only)</b></div><div class="subtle" style="margin-top:8px">The app never stores your mailbox password; it reads mail only and never changes read/deleted/moved states on the server.</div><div class="row-actions"><button class="btn" onclick="toast('Permissions: Mail.Read read-only; revoke in Outlook add-in management')">View permissions</button><button class="btn" onclick="toast('Disconnect: clears local cache and credential references after confirmation')">Disconnect</button></div></div>
+     <div class="section-title">Sync scope</div><div class="panel-card"><div class="field"><label>Initial sync window</label><select><option>Last 30 days</option><option>Last 7 days</option><option>Last 90 days</option><option>Custom</option></select></div><div class="field"><label>Max emails</label><input value="500"></div><div class="subtle">Read-only sync: never changes server read flags, never deletes or moves mail.</div></div>
+     <div class="section-title">Model</div><div class="panel-card"><div class="status-line"><span>Local model</span><span class="tag green">Available (demo)</span></div><div class="subtle">If the model is unavailable it falls back to manual handling — never auto-switches to a cloud service.</div></div>
+     <div class="section-title">Reminders & pet</div>
+     <div class="setting-row"><div><b>DND</b><small>No sound and no popups during DND</small></div><button class="toggle" id="toggleDnd" onclick="toggleDnd()"></button></div>
+     <div class="setting-row"><div><b>Keep pet on top</b><small>only in Outlook inside the window</small></div><button class="toggle on" onclick="toggleSetting(this)"></button></div>
+     <div class="setting-row" style="border-bottom:0"><div><b>Reduce motion</b><small>Turn off pulse and pop-in animations</small></div><button class="toggle" id="toggleAnim" onclick="toggleAnim(this)"></button></div>
+     <div class="panel-card" style="margin-top:10px"><b style="font-size:12px">Pet state preview (demo tool)</b><div class="subtle" style="margin:5px 0 2px">Preview how the five business states look, per requirement FR-07.</div><div class="state-demo" id="stateDemo"><button data-state="idle">Idle</button><button data-state="pending" class="on">Pending</button><button data-state="urgent">Due soon</button><button data-state="success">Success</button><button data-state="dnd">DND</button></div></div>
+     <div class="section-title">Data & privacy</div><div class="panel-card"><div class="subtle">Mail cache, tasks, evidence and rules stay on this device by default. Logs never record mail bodies, passwords or tokens.</div><button class="btn danger" style="margin-top:12px" onclick="toast('Shows a full cleanup confirmation and affected data scope')">Clear local data</button></div>
     </section>
    </div>
   </aside>
-  <button class="tray-chip" id="trayChip">⛶ MailPet 已在托盘 · 点击恢复</button>
+  <button class="tray-chip" id="trayChip">⛶ MailPet in tray · click to restore</button>
  </main>
 </div>
 <div class="toast" id="toast"></div>
@@ -318,24 +318,24 @@ body.reduce-anim .pop.open{animation:none}
 <script>
 const $=id=>document.getElementById(id);
 const mailData={
- assignment:{subject:'Assignment 2 – Submission reminder',sender:'Chen Wei <chen@university.edu>',body:'Please submit Assignment 2 by November 15.<br>Make sure your report includes the analysis and references.',quote:'“Please submit Assignment 2 by November 15.”',title:'提交 Assignment 2',summary:'教授提醒学生在 11 月 15 日前提交 Assignment 2。',deadline:'11 月 15 日 · 日期精度',status:'待确认'},
- project:{subject:'Updated dataset for group report',sender:'Project Team <project-team@university.edu>',body:'The updated dataset is attached. Please review the final numbers and prepare the group report. We are still waiting for the final appendix from one teammate.',quote:'“The updated dataset is attached. We are still waiting for the final appendix…”',title:'检查最终数据并完成小组报告',summary:'项目组更新了数据文件，报告仍需检查；部分材料等待组员补充。',deadline:'今天 17:00 · 精确时间',status:'临期'},
- seminar:{subject:'Seminar registration',sender:'Data Science Office <ds-office@university.edu>',body:'You are invited to register for next week’s research seminar. Please let us know whether you will attend.',quote:'“Please let us know whether you will attend.”',title:'确认是否参加研讨会',summary:'邀请参加下周研讨会，需要用户判断是否报名。',deadline:'未明确 · 待确认',status:'待确认'},
- library:{subject:'Book return notice',sender:'Library Services <library@university.edu>',body:'The book you borrowed is due soon. Please return it or renew the loan before the due date.',quote:'“Please return it or renew the loan before the due date.”',title:'归还或续借图书',summary:'借阅图书即将到期，需要归还或续借。',deadline:'邮件中未定位到具体日期',status:'待处理'},
- slides:{subject:'Week 7 slides uploaded',sender:'Teaching Assistant <ta@university.edu>',body:'The Week 7 slides have been uploaded to the course platform for your reference.',quote:'“The Week 7 slides have been uploaded…”',title:'无明确行动项',summary:'课程课件已上传，当前没有识别到明确的用户行动项。',deadline:'无',status:'无任务'}
+ assignment:{subject:'Assignment 2 – Submission reminder',sender:'Chen Wei <chen@university.edu>',body:'Please submit Assignment 2 by November 15.<br>Make sure your report includes the analysis and references.',quote:'"Please submit Assignment 2 by November 15."',title:'Submit Assignment 2',summary:'The professor asks students to submit Assignment 2 by Nov 15.',deadline:'Nov 15 · date-level precision',status:'Pending'},
+ project:{subject:'Updated dataset for group report',sender:'Project Team <project-team@university.edu>',body:'The updated dataset is attached. Please review the final numbers and prepare the group report. We are still waiting for the final appendix from one teammate.',quote:'"The updated dataset is attached. We are still waiting for the final appendix…"',title:'Check the final data and finish the group report',summary:'The team updated the dataset; the report still needs review and some materials are pending.',deadline:'Today 17:00 · exact time',status:'Due soon'},
+ seminar:{subject:'Seminar registration',sender:'Data Science Office <ds-office@university.edu>',body:'You are invited to register for next week’s research seminar. Please let us know whether you will attend.',quote:'"Please let us know whether you will attend."',title:'Decide whether to join the seminar',summary:'Invites you to next week’ seminar; you decide whether to register.',deadline:'Unclear · to confirm',status:'Pending'},
+ library:{subject:'Book return notice',sender:'Library Services <library@university.edu>',body:'The book you borrowed is due soon. Please return it or renew the loan before the due date.',quote:'"Please return it or renew the loan before the due date."',title:'Return or renew the book',summary:'Your borrowed book is due soon; return or renew it.',deadline:'No specific date found in the email',status:'To do'},
+ slides:{subject:'Week 7 slides uploaded',sender:'Teaching Assistant <ta@university.edu>',body:'The Week 7 slides have been uploaded to the course platform for your reference.',quote:'"The Week 7 slides have been uploaded…"',title:'No clear action item',summary:'This week’ slides are up; no clear action item detected for you.',deadline:'No',status:'No task'}
 };
-let currentMail='assignment',scope='仅当前邮件',suppressClick=false;
+let currentMail='assignment',scope='This email only',suppressClick=false;
 let st={pending:3,todo:8,waiting:2,done:12,urgent:1,dnd:false,assignDone:false};
 
-/* ---------- 桌宠状态机（FR-07 五状态） ---------- */
-const stateText={idle:'暂无需要立即处理的事项 · 单击打开功能面板',pending:'项待确认 · 单击打开功能面板',urgent:'项任务临期 · 单击打开功能面板',success:'操作成功',dnd:'免打扰中 · 仅更新角标'};
+/* ---------- Pet state machine(FR-07 five states) ---------- */
+const stateText={idle:'Nothing needs you right now · click to open the panel',pending:'items pending · click to open the panel',urgent:'tasks due soon · click to open the panel',success:'Success',dnd:'DND on · badge updates only'};
 function setPet(s,count){const pet=$('pet');pet.dataset.state=s;const face=$('petFace');
  face.textContent=s==='success'?'✓':s==='dnd'?'☾':'✦';
  const badge=$('petBadge');
  if(s==='pending'||s==='urgent'){badge.style.display='grid';badge.textContent=count}else badge.style.display='none';
  const tip=$('petTip');
  tip.textContent=s==='pending'||s==='urgent'?count+' '+stateText[s]:stateText[s];
- pet.setAttribute('aria-label','MailPet 桌宠：'+tip.textContent);}
+ pet.setAttribute('aria-label','MailPet pet: '+tip.textContent);}
 function refreshPet(){
  if(st.dnd){setPet('dnd',0);return}
  if(st.urgent>0)setPet('urgent',st.urgent);
@@ -344,7 +344,7 @@ function refreshPet(){
 let petTimer=null;
 function petSuccess(){clearTimeout(petTimer);setPet('success',0);petTimer=setTimeout(refreshPet,2200)}
 
-/* ---------- 快捷弹框 ---------- */
+/* ---------- quick popup ---------- */
 function isPopOpen(){return $('pop').classList.contains('open')}
 function positionPop(){const pop=$('pop'),pet=$('pet'),ws=$('workspace');
  const cl=Math.max(4,Math.min(pet.offsetLeft,ws.clientWidth-60)),ct=Math.max(4,Math.min(pet.offsetTop,ws.clientHeight-60));
@@ -362,17 +362,17 @@ function positionPop(){const pop=$('pop'),pet=$('pet'),ws=$('workspace');
  else if(ph+GAP<=availBelow)top=pet.offsetTop+pet.offsetHeight+GAP;
  else top=availAbove>=availBelow?10:pet.offsetTop+pet.offsetHeight+GAP;
  pop.style.left=left+'px';pop.style.top=Math.max(10,top)+'px';}
-/* ---------- 功能面板路由：宫格(L0) → 详情(L1) ---------- */
+/* ---------- Panel routing: launcher(L0) → detail(L1) ---------- */
 let popView='launch';
-const pvTitles={launch:'MailPet · 快捷功能',today:'今日面板',mail:'邮件重点',tasks:'当前任务',dnd:'免打扰',set:'系统设置'};
-const pvCtx={launch:['打开完整面板',()=>'today'],today:['在完整面板中查看',()=>'today'],mail:['打开邮件分析',()=>'mail'],tasks:['打开任务管理',()=>'tasks'],dnd:['打开提醒设置',()=>'settings'],set:['更多设置',()=>'settings']};
+const pvTitles={launch:'MailPet · Quick actions',today:'Today',mail:'Mail highlights',tasks:'Current tasks',dnd:'DND',set:'Settings'};
+const pvCtx={launch:['Open full panel',()=>'today'],today:['View in the full panel',()=>'today'],mail:['Open mail analysis',()=>'mail'],tasks:['Open Tasks',()=>'tasks'],dnd:['Open reminder settings',()=>'settings'],set:['More settings',()=>'settings']};
 function setBadge(id,n){const el=$(id);if(!el)return;if(n>0){el.style.display='grid';el.textContent=n}else el.style.display='none'}
 function renderLauncherBadges(){
  setBadge('tileToday',st.pending);
  $('tileMail').textContent='4';
  setBadge('tileTasks',st.urgent>0?st.urgent:st.pending);
  const t=$('tileDnd');t.classList.toggle('on',st.dnd);
- $('tileDndDesc').textContent=st.dnd?'已开启 · 点击配置时段':'普通提醒静默，仅角标';}
+ $('tileDndDesc').textContent=st.dnd?'On · click to schedule':'normal alerts silent, badge only';}
 function renderTodayPv(){
  $('popPending').textContent=st.pending;$('popDone').textContent=st.done;
  $('popUrgentBanner').style.display=(!st.dnd&&st.urgent>0)?'flex':'none';
@@ -381,27 +381,27 @@ function renderTodayPv(){
  $('popUrgentCard').style.display=st.urgent>0?'block':'none';
  $('popUrgentEmpty').style.display=st.urgent>0?'none':'block';
  const pc=$('popPendingCard');
- if(!st.assignDone&&st.pending>0){pc.style.display='block';pc.innerHTML='<div class="task-top"><div class="task-name">Assignment 2 – Submission reminder</div><span class="tag amber">待确认</span></div><div class="task-meta">确认截止日期与预计耗时 · Prof. Chen</div><div class="row-actions"><button class="btn primary" onclick="confirmTask()">确认任务</button><button class="btn" onclick="openTask(\'assignment\')">查看依据</button></div>'}
- else if(st.assignDone){pc.style.display='block';pc.innerHTML='<div class="task-top"><div class="task-name">提交 Assignment 2</div><span class="tag blue">待处理</span></div><div class="task-meta">11 月 15 日 · 用户已确认，提醒已排期</div><div class="row-actions"><button class="btn" onclick="editTask()">修改任务</button><button class="btn primary" onclick="completePopTask(this,\'提交 Assignment 2\')">标记完成</button></div>'}
+ if(!st.assignDone&&st.pending>0){pc.style.display='block';pc.innerHTML='<div class="task-top"><div class="task-name">Assignment 2 – Submission reminder</div><span class="tag amber">Pending</span></div><div class="task-meta">Confirm the deadline and estimated effort · Prof. Chen</div><div class="row-actions"><button class="btn primary" onclick="confirmTask()">Confirm task</button><button class="btn" onclick="openTask(\'assignment\')">View evidence</button></div>'}
+ else if(st.assignDone){pc.style.display='block';pc.innerHTML='<div class="task-top"><div class="task-name">Submit Assignment 2</div><span class="tag blue">To do</span></div><div class="task-meta">Nov 15 · user confirmed, reminder scheduled</div><div class="row-actions"><button class="btn" onclick="editTask()">Edit task</button><button class="btn primary" onclick="completePopTask(this,\'Submit Assignment 2\')">Mark done</button></div>'}
  else pc.style.display='none';
  $('popPendingEmpty').style.display=(st.pending>0||st.assignDone)?'none':'block';}
 const hlMails=[
- {id:'project',urgent:true,from:'Project Team',subj:'Updated dataset for group report',tags:[['临期 · 今天 17:00','red'],['2 个行动项','blue']],why:['截止时间在今天 17:00','数据已更新，报告待检查','仍在等待队友附件']},
- {id:'assignment',from:'Prof. Chen',subj:'Assignment 2 – Submission reminder',tags:[['待确认','amber'],['1 个行动项','blue']],why:['含明确截止时间 11 月 15 日','确认后生成待办与提醒']},
- {id:'seminar',from:'Data Science Office',subj:'Seminar registration',tags:[['候选行动项','purple'],['日期待确认','amber']],why:['是否参加需要你判断','邮件未写明日期，不做猜测']},
- {id:'library',from:'Library Services',subj:'Book return notice',tags:[['行动项','blue'],['无明确日期','amber']],why:['图书即将到期','未定位到具体日期，建议补充']}];
-function renderMailPv(){$('hlList').innerHTML=hlMails.map(m=>'<div class="hl-mail" onclick="openTask(\''+m.id+'\')"><div class="hl-top"><div style="flex:1"><b style="font-size:12px">'+m.subj+'</b><div class="task-meta">'+m.from+' · AI 重要性：'+(m.urgent?'高':'中')+'</div></div>'+m.tags.map(t=>'<span class="tag '+t[1]+'">'+t[0]+'</span>').join('')+'</div><div class="hl-why">'+m.why.map(w=>'<span class="why'+(m.urgent?' red':'')+'">'+w+'</span>').join('')+'</div></div>').join('')}
-function completePopTask(btn,name){btn.disabled=true;btn.textContent='已完成';st.done++;$('doneCount').textContent=st.done;toast(name+' 已完成；未触发提醒已失效');refreshPet();petSuccess()}
+ {id:'project',urgent:true,from:'Project Team',subj:'Updated dataset for group report',tags:[['Due · Today 17:00','red'],['2 action items','blue']],why:['Deadline is Today 17:00','Data updated; report needs review','Still waiting for a teammate’ attachment']},
+ {id:'assignment',from:'Prof. Chen',subj:'Assignment 2 – Submission reminder',tags:[['Pending','amber'],['1 action item','blue']],why:['Has an explicit deadline Nov 15','Confirming creates a to-do + reminder']},
+ {id:'seminar',from:'Data Science Office',subj:'Seminar registration',tags:[['Candidate action','purple'],['Date to confirm','amber']],why:['Attendance is your call','No date stated — no guessing']},
+ {id:'library',from:'Library Services',subj:'Book return notice',tags:[['Action item','blue'],['No clear date','amber']],why:['Book due soon','No exact date found; suggest adding one']}];
+function renderMailPv(){$('hlList').innerHTML=hlMails.map(m=>'<div class="hl-mail" onclick="openTask(\''+m.id+'\')"><div class="hl-top"><div style="flex:1"><b style="font-size:12px">'+m.subj+'</b><div class="task-meta">'+m.from+' · AI Importance: '+(m.urgent?'High':'Medium')+'</div></div>'+m.tags.map(t=>'<span class="tag '+t[1]+'">'+t[0]+'</span>').join('')+'</div><div class="hl-why">'+m.why.map(w=>'<span class="why'+(m.urgent?' red':'')+'">'+w+'</span>').join('')+'</div></div>').join('')}
+function completePopTask(btn,name){btn.disabled=true;btn.textContent='Done';st.done++;$('doneCount').textContent=st.done;toast(name+' Done; pending reminders cancelled');refreshPet();petSuccess()}
 function renderTasksPv(){
  let h='';
- if(st.pending>0&&!st.assignDone)h+='<div class="tk-group">待确认</div><div class="pop-card"><div class="task-top"><div class="task-name">提交 Assignment 2</div><span class="tag amber">待确认</span></div><div class="task-meta">11 月 15 日 · Prof. Chen</div><div class="row-actions"><button class="btn primary" onclick="confirmTask()">确认</button><button class="btn" onclick="openTask(\'assignment\')">原邮件</button></div></div>';
- if(st.assignDone&&st.pending>0)h+='<div class="pl-more" onclick="openPane(\'tasks\')">还有 '+st.pending+' 项待确认 · 在完整面板查看 <span>→</span></div>';
- if(st.urgent>0)h+='<div class="tk-group">待处理 · 临期</div><div class="pop-card"><div class="task-top"><div class="task-name">小组报告：提交最终版本</div><span class="tag red">临期</span></div><div class="task-meta">今天 17:00 · Project Team</div><div class="row-actions"><button class="btn" onclick="snooze()">稍后提醒</button><button class="btn primary" onclick="completeUrgent()">完成</button></div></div>';
- h+='<div class="tk-group">待处理</div><div class="pop-card"><div class="task-top"><div class="task-name">注册研究生研讨会</div><span class="tag blue">待处理</span></div><div class="task-meta">11 月 18 日 · Data Science Office</div><div class="row-actions"><button class="btn" onclick="openTask(\'seminar\')">查看邮件</button><button class="btn primary" onclick="completePopTask(this,\'注册研究生研讨会\')">完成</button></div></div>';
- h+='<div class="tk-group">等待条件</div><div class="pop-wait">⏳ 等待同学提供最终数据附件 · 明天 10:00 检查 · <button class="link" onclick="openPane(\'tasks\')">管理</button></div>';
+ if(st.pending>0&&!st.assignDone)h+='<div class="tk-group">Pending</div><div class="pop-card"><div class="task-top"><div class="task-name">Submit Assignment 2</div><span class="tag amber">Pending</span></div><div class="task-meta">Nov 15 · Prof. Chen</div><div class="row-actions"><button class="btn primary" onclick="confirmTask()">Confirm</button><button class="btn" onclick="openTask(\'assignment\')">Source email</button></div></div>';
+ if(st.assignDone&&st.pending>0)h+='<div class="pl-more" onclick="openPane(\'tasks\')">You still have '+st.pending+' items pending · view in the full panel <span>→</span></div>';
+ if(st.urgent>0)h+='<div class="tk-group">To do · due soon</div><div class="pop-card"><div class="task-top"><div class="task-name">Group report: submit final version</div><span class="tag red">Due soon</span></div><div class="task-meta">Today 17:00 · Project Team</div><div class="row-actions"><button class="btn" onclick="snooze()">Remind later</button><button class="btn primary" onclick="completeUrgent()">Done</button></div></div>';
+ h+='<div class="tk-group">To do</div><div class="pop-card"><div class="task-top"><div class="task-name">Register for the grad seminar</div><span class="tag blue">To do</span></div><div class="task-meta">Nov 18 · Data Science Office</div><div class="row-actions"><button class="btn" onclick="openTask(\'seminar\')">View email</button><button class="btn primary" onclick="completePopTask(this,\'Register for the grad seminar\')">Done</button></div></div>';
+ h+='<div class="tk-group">Waiting</div><div class="pop-wait">⏳ Waiting for a teammate’ final data attachment · Tomorrow 10:00 check · <button class="link" onclick="openPane(\'tasks\')">Manage</button></div>';
  $('popTaskList').innerHTML=h;}
 function renderDndPv(){
- $('dndStateBanner').innerHTML=st.dnd?'◐ <b>当前：已开启</b> · 普通提醒静默，仅更新角标':'◐ <b>当前：关闭</b> · 开启后普通提醒静默';
+ $('dndStateBanner').innerHTML=st.dnd?'◐ <b>Currently on</b> · normal alerts silent, badge only':'◐ <b>Currently off</b> · Normal alerts go silent when on';
  $('popDndToggle').classList.toggle('on',st.dnd);}
 function renderSetPv(){
  $('popSetDnd').classList.toggle('on',st.dnd);
@@ -412,8 +412,8 @@ function goPop(v){popView=v;
  $('popTitle').textContent=pvTitles[v];
  $('pop').classList.toggle('lv1',v!=='launch');
  $('popCtxBtn').textContent=pvCtx[v][0];$('popCtxBtn').onclick=()=>openPane(pvCtx[v][1]());
- $('popDndBtn').textContent=st.dnd?'退出免打扰':'免打扰';
- $('popHint').textContent=v==='launch'?'点击功能进入详情 · Esc 关闭 · Alt+P 快捷开关 · 右键桌宠更多选项':'‹ 返回功能菜单 · Esc 返回';
+ $('popDndBtn').textContent=st.dnd?'Exit DND':'DND';
+ $('popHint').textContent=v==='launch'?'Click a feature to open it · Esc closes · Alt+P toggles · Right-click the pet for more':'‹ Back to the menu · Esc goes back';
  if(v==='launch')renderLauncherBadges();
  if(v==='today')renderTodayPv();
  if(v==='mail')renderMailPv();
@@ -434,22 +434,22 @@ function closePop(){$('pop').classList.remove('open')}
 function togglePop(){isPopOpen()?closePop():openPop()}
 $('popClose').onclick=closePop;
 
-/* ---------- 免打扰 / 稍后 / 托盘 ---------- */
+/* ---------- DND / later / tray ---------- */
 function toggleDnd(){st.dnd=!st.dnd;
- $('menuDnd').textContent=st.dnd?'◐　关闭免打扰':'◐　开启免打扰';
+ $('menuDnd').textContent=st.dnd?'◐ Turn off DND':'◐ Turn on DND';
  $('toggleDnd').classList.toggle('on',st.dnd);
  $('petMenu').style.display='none';
  if(isPopOpen()){renderLauncherBadges();refreshActivePv()}
  refreshPet();
- toast(st.dnd?'已开启免打扰：普通提醒静默，仅更新角标':'已关闭免打扰');}
+ toast(st.dnd?'DND on: normal alerts silent, badge only':'DND turned off');}
 $('menuDnd').onclick=toggleDnd;
 $('menuPop').onclick=()=>{$('petMenu').style.display='none';if(!isPopOpen())openPop()};
 $('menuPane').onclick=()=>{$('petMenu').style.display='none';openPane('today')};
 $('menuSnooze').onclick=()=>{$('petMenu').style.display='none';snooze()};
-$('menuHide').onclick=()=>{$('pet').style.display='none';$('petMenu').style.display='none';closePop();$('trayChip').classList.add('show');toast('桌宠已隐藏到托盘；点击右下角气泡恢复')};
-$('trayChip').onclick=()=>{$('trayChip').classList.remove('show');$('pet').style.display='grid';refreshPet();toast('桌宠已恢复显示')};
+$('menuHide').onclick=()=>{$('pet').style.display='none';$('petMenu').style.display='none';closePop();$('trayChip').classList.add('show');toast('Pet hidden to tray; click the chip at bottom-right to restore')};
+$('trayChip').onclick=()=>{$('trayChip').classList.remove('show');$('pet').style.display='grid';refreshPet();toast('Pet restored')};
 
-/* ---------- 桌宠：点击 / 右键 / 拖拽 / 位置记忆 ---------- */
+/* ---------- Pet: click / right-click / Drag / position memory ---------- */
 const pet=$('pet'),ws=$('workspace');
 pet.addEventListener('click',()=>{if(suppressClick){suppressClick=false;return}togglePop()});
 pet.addEventListener('contextmenu',e=>{e.preventDefault();closePop();
@@ -478,18 +478,18 @@ function placePet(){let x,y;try{const s=JSON.parse(localStorage.getItem('mailpet
  moveTip();}
 window.addEventListener('resize',()=>placePet());
 
-/* ---------- 全局键盘：Esc 关闭 / Alt+P 开关（FR-07 键盘入口） ---------- */
+/* ---------- Global keys: Esc Close / Alt+P toggle(FR-07 keyboard entry) ---------- */
 document.addEventListener('keydown',e=>{
  if(e.key==='Escape'){if(isPopOpen()&&popView!=='launch'){goPop('launch')}else{closePop();$('petMenu').style.display='none';closeModal();}}
  if(e.altKey&&(e.key==='p'||e.key==='P')){e.preventDefault();togglePop();}});
 
-/* ---------- 点击外部关闭 ---------- */
+/* ---------- Close on outside click ---------- */
 document.addEventListener('click',e=>{const t=e.target;
- if(!t||!t.isConnected)return;/* 事件源被重渲染移除时不视为外部点击 */
+ if(!t||!t.isConnected)return;/* Nodes removed by re-render don’t count as outside clicks */
  if(!t.closest('#pop')&&!t.closest('#pet')&&isPopOpen())closePop();
  if(!t.closest('#petMenu')&&!t.closest('#pet'))$('petMenu').style.display='none';});
 
-/* ---------- 任务窗格 / 视图 ---------- */
+/* ---------- task pane / view ---------- */
 function showView(v){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));$('view-'+v).classList.add('active');document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===v));$('sidebar').classList.remove('collapsed');$('petMenu').style.display='none'}
 function openPane(v){closePop();showView(v)}
 document.querySelectorAll('#nav button').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
@@ -497,57 +497,57 @@ document.querySelectorAll('[data-open]').forEach(b=>b.addEventListener('click',(
 $('closeSide').onclick=()=>$('sidebar').classList.add('collapsed');
 $('addinCmd').onclick=()=>{const sb=$('sidebar');if(sb.classList.contains('collapsed'))sb.classList.remove('collapsed');else sb.classList.add('collapsed')};
 
-/* ---------- 邮件选择 ---------- */
+/* ---------- Mail selection ---------- */
 function selectMail(id){currentMail=id;const d=mailData[id];
- $('emailSubject').textContent=d.subject;$('emailSender').textContent=d.sender+'　·　收件人：你';
+ $('emailSubject').textContent=d.subject;$('emailSender').textContent=d.sender+' · To: you';
  $('emailBody').innerHTML=d.body;$('emailQuote').textContent=d.quote;
  document.querySelectorAll('.mail-item').forEach(x=>x.classList.toggle('selected',x.dataset.mail===id));
  document.querySelectorAll('.mini-mail').forEach(x=>x.classList.toggle('selected',x.dataset.mail===id));
  $('mailAnalysisTitle').textContent=d.title;$('mailSummary').textContent=d.summary;
  $('mailDeadline').textContent=d.deadline;$('mailAnalysisStatus').textContent=d.status;
- $('mailEvidence').innerHTML=d.quote+'<br><button class="link" onclick="toast(\'已定位到 Outlook 阅读区域中的原文段落\')">查看原文位置 →</button>';
+ $('mailEvidence').innerHTML=d.quote+'<br><button class="link" onclick="toast(\'Located the quote in the Outlook reading pane\')">View in email →</button>';
  showView('mail')}
 document.querySelectorAll('.mail-item').forEach(x=>x.addEventListener('click',()=>selectMail(x.dataset.mail)));
 
-/* ---------- 任务动作（弹框与面板联动） ---------- */
+/* ---------- Task actions(popup & pane linked) ---------- */
 function confirmTask(){if(st.pending>0)st.pending--;st.assignDone=true;
  $('pendingCount').textContent=String(st.pending).padStart(2,'0');
- $('todayAssignment').innerHTML='<div class="task-top"><div class="task-name">提交 Assignment 2</div><span class="tag blue">待处理</span></div><div class="task-meta">11 月 15 日 · 用户已确认</div><div class="row-actions"><button class="btn" onclick="editTask()">修改任务</button><button class="btn primary" onclick="completeTask(this)">标记完成</button></div>';
- $('mailAnalysisStatus').textContent='已确认';
+ $('todayAssignment').innerHTML='<div class="task-top"><div class="task-name">Submit Assignment 2</div><span class="tag blue">To do</span></div><div class="task-meta">Nov 15 · user confirmed</div><div class="row-actions"><button class="btn" onclick="editTask()">Edit task</button><button class="btn primary" onclick="completeTask(this)">Mark done</button></div>';
+ $('mailAnalysisStatus').textContent='Confirmed';
  refreshActivePv();
  refreshPet();petSuccess();
- toast('任务已确认，已加入待处理列表；相关未触发提醒保持待命');}
+ toast('Task confirmed and added to To do; related pending reminders stay armed');}
 function completeTask(btn){const c=btn.closest('.task-card');const tag=c.querySelector('.tag');
- if(tag){tag.textContent='已完成';tag.className='tag green'}
- btn.disabled=true;btn.textContent='已完成';st.done++;
+ if(tag){tag.textContent='Done';tag.className='tag green'}
+ btn.disabled=true;btn.textContent='Done';st.done++;
  $('doneCount').textContent=st.done;
  refreshActivePv();
  refreshPet();petSuccess();
- toast('任务已完成；未触发提醒已失效');}
+ toast('Task done; pending reminders cancelled');}
 function completeUrgent(){if(st.urgent>0)st.urgent=0;st.done++;
  $('doneCount').textContent=st.done;
- const t=$('todayUrgent');t.innerHTML='<div class="task-top"><div class="task-name">小组报告：提交最终版本</div><span class="tag green">已完成</span></div><div class="task-meta">今天 17:00 前 · 用户已确认完成</div>';
- const rt=$('taskUrgentTag');if(rt){rt.textContent='已完成';rt.className='tag green'}
+ const t=$('todayUrgent');t.innerHTML='<div class="task-top"><div class="task-name">Group report: submit final version</div><span class="tag green">Done</span></div><div class="task-meta">Today 17:00 · user confirmed completion</div>';
+ const rt=$('taskUrgentTag');if(rt){rt.textContent='Done';rt.className='tag green'}
  refreshActivePv();
  refreshPet();petSuccess();
- toast('临期任务已完成；今晚 17:00 的提醒已取消');}
-function snooze(){openModal('稍后提醒','选择下次提醒时间。稍后提醒是提醒属性，不会改变任务完成状态。<div class="field"><label>提醒时间</label><select><option>30 分钟后</option><option>今天 15:00</option><option>明天 09:00</option></select></div>',()=>toast('已安排稍后提醒；旧提醒将去重，不重复通知'))}
+ toast('Due-soon task done; tonight’ 17:00 reminder cancelled');}
+function snooze(){openModal('Remind later','Pick the next reminder time. A reminder never changes the task’ status.<div class="field"><label>Reminder time</label><select><option>30 min later</option><option>Today 15:00</option><option>Tomorrow 09:00</option></select></div>',()=>toast('Reminder scheduled; old reminders deduplicated'))}
 function openTask(id){closePop();selectMail(id);showView('mail')}
-function editTask(){openModal('编辑任务','<div class="field"><label>任务标题</label><input value="提交 Assignment 2"></div><div class="field"><label>截止日期</label><input value="2026-11-15" type="date"></div><div class="field"><label>预计耗时（用户输入）</label><input placeholder="例如：2 小时"></div><div class="field"><label>提醒设置</label><select><option>截止前 1 天</option><option>截止前 2 小时</option><option>暂不提醒</option></select></div>',()=>toast('任务信息已保存（原型状态）'))}
-function newTask(){openModal('手动创建任务','<div class="field"><label>任务标题</label><input placeholder="输入任务标题"></div><div class="field"><label>截止日期（可选）</label><input type="date"></div><div class="field"><label>关联邮件</label><select><option>不关联邮件</option><option>当前选中邮件</option></select></div>',()=>toast('已创建本地手动任务'))}
+function editTask(){openModal('Edit task','<div class="field"><label>Task title</label><input value="Submit Assignment 2"></div><div class="field"><label>Due date</label><input value="2026-11-15" type="date"></div><div class="field"><label>Estimated effort (user input)</label><input placeholder="e.g., 2 hours"></div><div class="field"><label>Reminder</label><select><option>1 day before due</option><option>2h before due</option><option>No reminder</option></select></div>',()=>toast('Task saved (demo)'))}
+function newTask(){openModal('Create a manual task','<div class="field"><label>Task title</label><input placeholder="Enter a task title"></div><div class="field"><label>Due date (optional)</label><input type="date"></div><div class="field"><label>Linked email</label><select><option>No linked email</option><option>Current email</option></select></div>',()=>toast('Local manual task created'))}
 
-/* ---------- 规则 / 验证 / 设置 ---------- */
+/* ---------- rule / validation / Settings ---------- */
 function openCorrection(){showView('rules');$('ruleField').focus()}
 function chooseScope(el,s){scope=s;document.querySelectorAll('.choice').forEach(x=>x.classList.remove('selected'));el.classList.add('selected')}
-function previewRule(){$('rulePreview').style.display='block';$('scopeLabel').textContent=scope;$('impactCount').textContent=scope==='仅当前邮件'?'1 封':scope==='同一发件人'?'6 封':'4 封';toast('预览已生成；尚未修改任何邮件')}
-function enableRule(){$('rulePreview').style.display='none';toast('规则已启用；默认仅作用于未来匹配邮件')}
-function replay(){toast('规则回放完成：8/10 正确，3 项改善，1 项退化')}
+function previewRule(){$('rulePreview').style.display='block';$('scopeLabel').textContent=scope;$('impactCount').textContent=scope==='This email only'?'1 email':scope==='Same sender'?'6 emails':'4 emails';toast('Preview ready; no email changed yet')}
+function enableRule(){$('rulePreview').style.display='none';toast('Rule enabled; applies to future emails only')}
+function replay(){toast('Replay done: 8/10 correct, 3 improved, 1 worse')}
 function filterMails(q){document.querySelectorAll('#view-mail .mini-mail').forEach(x=>x.style.display=x.textContent.toLowerCase().includes(q.toLowerCase())?'block':'none')}
 function filterTasks(status){document.querySelectorAll('#taskList .task-card').forEach(x=>x.style.display=status==='all'||x.dataset.status===status?'block':'none')}
-function toggleSetting(el){el.classList.toggle('on');toast('设置已更新（原型状态）')}
-function toggleAnim(el){el.classList.toggle('on');document.body.classList.toggle('reduce-anim',el.classList.contains('on'));toast(el.classList.contains('on')?'已减少动画：关闭脉动与弹出动画':'已恢复默认动画')}
+function toggleSetting(el){el.classList.toggle('on');toast('Setting updated (demo)')}
+function toggleAnim(el){el.classList.toggle('on');document.body.classList.toggle('reduce-anim',el.classList.contains('on'));toast(el.classList.contains('on')?'Reduced motion: pulse and pop-in animations off':'Default animations restored')}
 
-/* ---------- 桌宠状态预览（设置内演示工具） ---------- */
+/* ---------- Pet state preview(in-settings demo tool) ---------- */
 $('stateDemo').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
  document.querySelectorAll('#stateDemo button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
  const s=b.dataset.state;
@@ -557,19 +557,19 @@ $('stateDemo').addEventListener('click',e=>{const b=e.target.closest('button');i
  if(s==='dnd'){st.dnd=true}else{st.dnd=false}
  st.assignDone=false;
  $('toggleDnd').classList.toggle('on',st.dnd);
- $('menuDnd').textContent=st.dnd?'◐　关闭免打扰':'◐　开启免打扰';
+ $('menuDnd').textContent=st.dnd?'◐ Turn off DND':'◐ Turn on DND';
  $('pendingCount').textContent=String(st.pending).padStart(2,'0');
  if(s==='success'){petSuccess()}else{refreshPet()}
  if(isPopOpen())refreshActivePv();
- toast('桌宠状态预览：'+b.textContent+'（'+stateText[s].split(' · ')[0]+'）');});
+ toast('Pet state preview: '+b.textContent+'('+stateText[s].split(' · ')[0]+')');});
 
-/* ---------- 弹窗 / 提示 ---------- */
+/* ---------- modal / tip ---------- */
 function toast(s){const t=$('toast');t.textContent=s;t.style.display='block';clearTimeout(window._toast);window._toast=setTimeout(()=>t.style.display='none',2600)}
-function openModal(title,body,onSave){const m=$('modal');m.innerHTML='<h3>'+title+'</h3><div class="subtle">本原型使用模拟数据，不会连接或修改真实邮箱。</div>'+body+'<div class="actions"><button class="btn" onclick="closeModal()">取消</button><button class="btn primary" id="modalSave">保存</button></div>';$('modalBackdrop').style.display='flex';$('modalSave').onclick=()=>{closeModal();onSave&&onSave()}}
+function openModal(title,body,onSave){const m=$('modal');m.innerHTML='<h3>'+title+'</h3><div class="subtle">This prototype uses mock data and never touches a real mailbox.</div>'+body+'<div class="actions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" id="modalSave">Save</button></div>';$('modalBackdrop').style.display='flex';$('modalSave').onclick=()=>{closeModal();onSave&&onSave()}}
 function closeModal(){$('modalBackdrop').style.display='none'}
 $('modalBackdrop').addEventListener('click',e=>{if(e.target.id==='modalBackdrop')closeModal()});
 
-/* ---------- 初始化 ---------- */
+/* ---------- Init ---------- */
 placePet();refreshPet();
 </script>
 </body>

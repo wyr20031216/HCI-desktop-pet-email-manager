@@ -109,3 +109,115 @@ Medium-Fi（v2.1 双面板架构）的结构说明见 `PROTOTYPE-MEDIUM.md`
 - 所有数据为内置演示状态，提醒不真实调度（以 toast 表达意图）；不连接真实邮箱。
 - 真实加载项中，Office.js 不支持跨窗格悬浮层——本原型的气泡需运行于加载项页面内；状态机、层级与流程可直接映射。
 - 依赖 Pointer Events、localStorage、CSS Grid；无外部库与网络请求。
+
+---
+
+# English Version · MailPet Hi-Fi Prototype Walkthrough (v3.0 · single-bubble panel)
+
+Companion file: `prototype.html` (v3.0, includes all fixes for heuristic-evaluation issues 1–15) · Live: <https://wyr20031216.github.io/HCI-desktop-pet-email-manager/prototype.html>
+Structure notes for the Medium-Fi (v2.1 two-panel) version: see `PROTOTYPE-MEDIUM.md`
+
+---
+
+## 0. Entry Points & Global Interactions
+
+| Interaction | How |
+| --- | --- |
+| Open / close the feature bubble | Click the pet; or the "✦ MailPet" toolbar button; or `Alt+P` |
+| Grid → detail page | Click one of the six tiles; "‹" at the top or `Esc` returns to the grid, another `Esc` closes the bubble |
+| Pet right-click menu | Open panel / Open Tasks / DND / Remind later / Settings / Hide to tray |
+| Drag the pet | Hold left button; position persists in localStorage (restored on reload); moves ≥4px don't toggle the panel |
+| Hide / restore | Menu "Hide to tray" → click the bottom-right chip to restore |
+| Click outside | The bubble is non-modal — clicking anywhere outside closes it |
+
+Pet's five states (FR-07): Idle ✦ / Pending (amber badge n) / Due soon (red badge n + pulse) / Success (green ✓, 2.2s transient) / DND (gray ☾). "Reduce motion" disables pulse and pop-in animations.
+
+## 1. Today
+
+1. Click the pet → grid → "Today".
+2. **Stat cards**: All open / Due today · open / All pending / Done today. Clicking a number jumps to Tasks with that exact filter applied.
+3. **Due-soon card** (group report due Today 17:00):
+   - "View task" → jumps to Mail and scrolls to that email's AI analysis
+   - "Remind later" → see §3
+   - "Done" → card flips to Done, the 17:00 reminder is cancelled; "Restore to To do" undoes it
+4. **Pending card** (Assignment 2): "Confirm task" → becomes To do (Nov 15, reminder scheduled); "View evidence" → opens the email's source quote.
+5. **Waiting**: "Condition met — start now" → the waiting task becomes To do.
+6. Cards label "Deadline" and "Next reminder" separately; after snoozing, "Edit / Cancel reminder" links appear.
+
+## 2. Mail
+
+1. Grid → "Mail". Page layout top-to-bottom: search, email list, project tags, AI analysis of the current email, AI highlights.
+2. **Switching emails**: click any list item (or Outlook's own mail list) → reading pane, AI analysis and tags all follow.
+3. **Search**: filters the list as you type.
+4. **AI analysis card**: task title & status, summary, deadline (uncertain ones labeled "date only — exact time unconfirmed"), field source, evidence quote ("View in email" scrolls to the passage).
+5. **Edit task**: the modal's "Due type" offers All-day (date only) or Specific time (date + time); a live hint shows what the reminder will be based on.
+6. **Project tags**: "Manage tags for this email" → check/uncheck existing projects (used by project-scoped rules, see §4).
+7. **AI highlights**: four flagged emails with "why it matters" chips; clicking a card jumps to that email's analysis.
+
+## 3. Tasks
+
+1. Grid → "Tasks".
+2. **Filters & search**: time range (All time / Due today / Done today) × status (All / Open / Pending / To do / Waiting / Done), combinable; search covers task names and sources; the scope line updates live; the empty state offers "Clear search & filters".
+3. **Confirm task**: a Pending card's "Confirm" → To do (Today panel and pet badge update in sync).
+4. **Done & undo**: "Done" → tag flips, button becomes "Undo"; clicking again restores To do and re-arms reminders.
+5. **Remind later (full flow, evaluation #2/#3/#4)**:
+   1. Click "Remind later" → the modal header shows task name and deadline (Today 17:00)
+   2. Options: `In 30 min · Today 10:15 (recommended)` / `Today 15:00 · 2h before due` / `Tomorrow 09:00 · ⚠ past the deadline` / `Custom… (pick date & time)`
+   3. Choosing a past-deadline option (including out-of-window customs) shows a red warning; saving then requires a "Confirm again" dialog
+   4. The success toast states the next reminder time; task cards label "Deadline" and "Next reminder" separately with "Edit / Cancel reminder" links
+6. **Waiting**: "Condition met — start now" flips it to To do; "Edit check time" opens a datetime picker.
+7. **Manual task**: title required (empty shows a hint), optional due date; searchable by name after creation.
+
+## 4. Corrections & Rules
+
+1. Grid → "Corrections & Rules". The "Current judgment" panel follows the selected email.
+2. **Two-way correction (evaluation #12)**: pick a field (Importance / Needs action? / Applies to / Action tip?) → "New value" lists both directions (Important↔Normal, Needs action↔No action needed…). "Try it: mark a missed email as needing action" demos fixing a miss.
+3. **Scope**: This email only / Same sender / Same project (project scope requires tagging first; a collapsible "How do I tag an email?" sits right below, with a direct "Manage tags" shortcut that returns here).
+4. **Preview impact**: match condition, estimated affected count, before/after judgment; blocked with a hint if no project tag is selected.
+5. **Confirm (evaluation #6)**: with "This email only" the button reads "Apply to this email" (future-emails note hidden); reusable scopes read "Enable rule (future only)".
+6. **Enabled-rule card**: "Pause rule" ↔ "Resume rule" (status tag follows); "Undo this change" → a modal explains the revert-to-v1 scope before confirming (evaluation #7).
+
+## 5. Validation (with the regression-fix loop, evaluation #8)
+
+1. Grid → "Validation": 8/10 correct, +3 improved, 6 unaffected, 1 worse; before/after progress bars.
+2. **Regression Sample 07** (missing-materials email wrongly set to no-action):
+   - "View email" → opens the sample, with a "← back to Sample 07 results" link
+   - "Compare" → a table of Original / After rule / Correct plus the misjudgment cause
+   - "Adjust rule scope" → jumps to Rules in repair mode (context banner "Fixing Sample 07")
+3. **Fix**: switch scope to "This email only" or an unrelated project (must no longer hit the rule) → preview → "Save scope & return".
+4. "Re-run check" → 9/10, worse drops to zero, Sample 07 marked "fixed".
+
+## 6. Settings
+
+1. Grid → "Settings".
+2. **Reminders & pet**: DND toggle (right-click menu and footer button stay in sync); auto schedule; "Still remind confirmed tasks due within 24h during DND"; keep-pet-on-top; reduce motion; five-state preview tool.
+3. **Mailbox connection**: Outlook host consent (Graph · Mail.Read read-only); no password storage; read-only; view permissions / disconnect.
+4. **Sync scope**: initial window and max email count; **Model**: local model, manual fallback when unavailable; **Data & privacy**: local-storage notes and a cleanup entry.
+
+---
+
+## Requirement Mapping
+
+| Prototype capability | Requirement |
+| --- | --- |
+| Four stat groups in the bubble + grid shortcuts + in-card task actions | FR-02, FR-05 |
+| Email AI analysis + source evidence + highlights | FR-03 |
+| Uncertain fields labeled, never guessed | FR-04 |
+| Reminder invalidation / undo-restore / snooze never changes status / waiting conditions | FR-05, FR-06 |
+| Pet five states / right-click menu / drag memory / tray / keyboard | FR-07 |
+| Two-way correction + three scopes + impact preview + rule pause/undo | FR-08, FR-09 |
+| Fixed test-set checks with the regression-fix loop | FR-10 |
+| Read-only consent, local data, sanitized logs | FR-01 (adapted), FR-11 |
+| Manual-task fallback when the model is unavailable | FR-12 |
+
+## Key Differences vs. Medium-Fi (v2.1)
+
+- **Single-bubble architecture**: the Outlook task-pane sidebar is removed; all six feature pages (Today / Mail / Tasks / Rules / Validation / Settings) live inside the pet bubble with two-level navigation (grid → detail).
+- DND is no longer a separate tile: it lives in the right-click menu, the bubble footer button, and Settings.
+- All evaluation fixes 1–15 exist only in Hi-Fi (exact due times, past-deadline warnings with double confirm, custom reminders, next-reminder summaries, complete-undo, rule wording & action split, the regression-fix loop, plain-language terms, readability, stat scopes, task search, project-tag guidance, etc.).
+
+## Known Limitations
+
+- All data is built-in demo state; reminders aren't really scheduled (toasts convey intent); no real mailbox is connected.
+- In a real add-in, Office.js doesn't allow cross-pane floating layers — the bubble would run inside the add-in page; the state machine, hierarchy and flows map directly.
+- Depends on Pointer Events, localStorage, CSS Grid; no external libraries or network requests.

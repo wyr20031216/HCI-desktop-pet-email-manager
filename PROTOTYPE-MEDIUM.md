@@ -173,3 +173,165 @@ localStorage['mailpetPos']  // 桌宠位置记忆
 - **真实加载项**：Office.js 不支持跨窗格悬浮层——桌宠与功能面板需运行于任务窗格/加载项页面内（弹框用窗格内浮层），本原型的状态机、层级、尺寸与流程可直接映射；邮箱访问用 Graph Mail.Read 只读授权替代原型中的演示授权。
 - **依赖特性**：Pointer Events（拖拽）、localStorage（file:// 下可用）、CSS Grid；无需任何外部库与网络请求。
 - **版本**：v1.0 单击开侧栏 → v2.0 单击快捷弹框 + 五状态/拖拽/托盘 + 加载项授权 → **v2.1 功能宫格两级交互 + 紧凑模式 + 误关闭/状态同步修复**。变更细节见 `README.md`。
+
+---
+
+# English Version · MailPet Medium-Fi Prototype Notes (v2.1 · two-panel architecture)
+
+Companion file: `prototype-medium.html` (v2.1 two-panel architecture, 2026-11-09) · For the Hi-Fi v3.0 single-bubble walkthrough see `PROTOTYPE-HIFI.md`
+Basis: "Desktop-pet Mail Assistant: Requirements & Open-source Choices" FR-01–FR-12
+
+---
+
+## 1. Overview & How to Open
+
+`prototype-medium.html` is a **single-file, zero-dependency** interactive high-fidelity prototype simulating MailPet running as an Outlook add-in. All data is built-in demo data; no real mailbox is used.
+
+- **Open**: double-click the file in a browser (everything works over `file://`); or serve the folder (`python -m http.server 8741`) and visit `http://127.0.0.1:8741/prototype-medium.html`.
+- **Recommended viewport**: ≥1100×700; minimum 600px height (the panel switches to compact mode automatically).
+- **Suggested demo path**:
+  1. Click the pet → feature grid (note badges: pending 3 / highlighted 4 / due-soon 1)
+  2. "Mail highlights" → per-email "why it matters" chips → click a card to jump to the email and evidence
+  3. Back → "Current tasks" → confirm in place → watch the badge go 3→2 and the pet flash green ✓ then fall back
+  4. "DND" → enable → pet grays out ☾, tile dims
+  5. Right-click the pet → menu (quick panel / full panel / DND / remind later / settings / hide to tray)
+  6. Hide to tray → restore via the bottom-right chip; drag the pet anywhere → position survives reload
+  7. `Alt+P` toggles; Esc goes detail→grid→close; the toolbar "✦ MailPet" toggles the task pane
+
+## 2. Page Structure (DOM Overview)
+
+```
+.app
+├─ .titlebar            Simulated Outlook top bar (brand, search, account)
+├─ .toolbar             Toolbar + #addinCmd "✦ MailPet" add-in command (toggles the task pane)
+├─ #workspace (main, position:relative)   ← positioning container for pet & popup
+│   ├─ .folders         Folder rail (simulated)
+│   ├─ .mail-list       Mail list (.mail-item ×5, data-mail ↔ mailData)
+│   ├─ .reading         Reading pane (subject / sender / body / evidence quote / attachment)
+│   ├─ #pet             Pet button (data-state ×5, contains #petFace/#petBadge)
+│   ├─ #petTip          Hover status tip (pointer-events:none)
+│   ├─ #petMenu         Right-click menu
+│   ├─ #pop             Feature popup (two levels: grid L0 + detail L1, see §4)
+│   ├─ #sidebar         Task pane (add-in sidebar, six views, see §5)
+│   └─ #trayChip        Tray-restore chip (shown after hiding the pet)
+├─ #toast               Global toast (bottom-center, auto-hides in 2.6s)
+└─ #modalBackdrop/#modal Modals (edit task / remind later / new task)
+```
+
+## 3. Pet State Machine (FR-07)
+
+### 3.1 Five business states
+
+| State | data-state | Visual | Trigger |
+| --- | --- | --- | --- |
+| Idle | `idle` | Blue gradient ✦, no badge | No pending and nothing due |
+| Pending | `pending` | Amber badge n (n = st.pending) | st.pending > 0 |
+| Due soon | `urgent` | Red badge n + pulsing ring | st.urgent > 0 (overrides pending) |
+| Success | `success` | Green ✓, **transient 2.2s**, then falls back | Feedback after confirm/complete etc. |
+| DND | `dnd` | Gray gradient ☾ (overlay, highest priority) | st.dnd = true |
+
+- Priority: `dnd > urgent > pending > idle`; `success` is transient, triggered by `petSuccess()` and resolved by `setTimeout(refreshPet, 2200)`.
+- States use dual channels — icon + number + text (badge digits plus aria-label/hover-tip text via `stateText`), never color alone.
+- "Reduce motion" (body.reduce-anim) disables the pulse and hover lift.
+
+### 3.2 Pet interactions
+
+| Interaction | Behavior |
+| --- | --- |
+| Left click | Toggle the feature popup (non-focus-stealing; when opening, focus moves to the close button) |
+| Right click | `#petMenu`: open popup / open full panel / DND / remind later / settings / hide to tray |
+| Drag | Pointer events, clamped to workspace; ≥4px counts as drag (no toggle); position stored in `localStorage['mailpetPos']`, restored on reload |
+| Hover | `#petTip` shows a one-line status summary |
+| Keyboard | `Alt+P` toggles; `Esc` closes; Tab focusable; button semantics via `<button>` + aria-label |
+| Hide/restore | Menu "Hide to tray" → pet hidden + `#trayChip` appears; clicking the chip restores it in place |
+
+## 4. Feature Popup (#pop, core component)
+
+### 4.1 Two-level navigation
+
+- **L0 grid** (`#pv-launch`): 2×3 tiles = five features + full panel (dashed). Live badges: Today = pending count, Mail highlights = highlighted count (4), Current tasks = due-soon (red) else pending, DND tile dims while on.
+- **L1 detail pages**: `#pv-today` / `#pv-mail` / `#pv-tasks` / `#pv-dnd` / `#pv-set`.
+- Navigation API: `goPop(view)` switches (updating title, back button, context button, hint bar, and repositioning); `#popBack` or Esc returns to the grid; `openPop()` always starts at the grid; `refreshActivePv()` re-renders the active page after data changes.
+- The footer context button `#popCtxBtn` relabels per page and deep-links into the task pane (`pvCtx` map); detail pages hide secondary buttons (`.pop.lv1`).
+
+### 4.2 The five detail pages
+
+| Page | Content & actions |
+| --- | --- |
+| Today | Three-state banner (due red / DND gray / clear green) + four stat groups (pending / to-do / waiting / done) + due-soon card (view / remind later / done) + pending card (confirm / view evidence; flips to To do after confirming) + waiting strip |
+| Mail highlights | `hlMails` four emails (project/assignment/seminar/library) with tags (due / pending / action counts) and "why it matters" chips; click `openTask(id)` to jump to the pane's mail analysis; footer link to all mail |
+| Current tasks | Grouped Pending / To do·due / To do / Waiting; supports in-place confirm, complete, remind later; after confirming, the pending group collapses into a "n more pending" link |
+| DND | State banner + instant toggle (synced with pet / grid / settings) + auto schedule + due-soon override |
+| Settings | Quick toggles for DND / reduce motion / keep-on-top + "More settings" deep link into the pane's settings view |
+
+### 4.3 Positioning & adaptation (positionPop)
+
+- Rule: prefers anchoring **above-right** of the pet (GAP = 16px, roughly right-aligned to the pet); flips below if it doesn't fit; if neither fits, height compresses — the **grid auto-compacts** (below 500px available: 3×2 rows, descriptions hidden, all six tiles on one screen); detail pages scroll internally.
+- Invariants: never covers the pet; ≥10px from window edges; defensive clamping of an out-of-bounds pet before opening.
+- Size: 380px wide (340px ≤1100px viewport); non-modal (no overlay, no focus steal); closes via Esc / outside click / pet click / close button.
+- The outside-click guard checks `isConnected`: event sources removed by re-render don't count as outside clicks (the v2.1 false-close fix).
+
+## 5. Task Pane (#sidebar, add-in sidebar)
+
+Header: MailPet mark + "Outlook add-in · task pane" subtitle + sync status + collapse button. `#addinCmd` (toolbar) and `#closeSide` control expand/collapse.
+
+Six views (`#nav`, `.view`):
+
+| View | id | Highlights |
+| --- | --- | --- |
+| Today | view-today | Four-stat grid, due/pending/waiting/recently-done cards (data-synced with the popup) |
+| Mail | view-mail | Mini mail list + current-email AI analysis (title / summary / deadline / field source / evidence quote, FR-03) |
+| Tasks | view-tasks | Task cards + status filters (all / pending / to-do / waiting / done, FR-02/05) |
+| Rules | view-rules | Correct current email, three scopes (this email / same sender / same project), impact preview, enabled rules (FR-08/09) |
+| Validation | view-validation | Fixed test-set replay: before/after comparison, improved / worse / unchanged details (FR-10) |
+| Settings | view-settings | Add-in consent (Graph Mail.Read read-only), sync scope, local model, reminders & pet (incl. the **five-state preview tool**), data & privacy (FR-01/11/12) |
+
+Modals (openModal): edit task (title / deadline / effort / reminder), remind later (time choice, never changes task status), new manual task.
+
+## 6. Data Model & Sync
+
+```js
+mailData   // 5 demo emails: subject/sender/body/quote + AI analysis (title/summary/deadline/status)
+hlMails    // popup "Mail highlights" list: id/tags/why array
+st         // global business state:
+           //   pending (3), todo (8), waiting (2), done (12), urgent (1),
+           //   dnd flag, assignDone (demo task confirmed?)
+popView    // active popup page: launch/today/mail/tasks/dnd/set
+localStorage['mailpetPos']  // pet position memory
+```
+
+Key sync chains:
+
+- `confirmTask()`: st.pending−1, assignDone=true → update pane today card + analysis status → `refreshActivePv()` refreshes the popup → pet success flash → falls back to urgent/pending → grid badges follow.
+- `completeUrgent()` / `completePopTask()` / `completeTask()`: done+1, card flips to Done → "reminder cancelled" toast → pet success.
+- `toggleDnd()`: synced in three places (settings toggle, popup DND page/grid tile, right-click menu label) + pet dnd state + today banner switch.
+- `selectMail(id)`: Outlook reading pane + mini-list selection + AI analysis switch as one (FR-03 evidence follows the email).
+
+## 7. Style Notes (see the Figma board)
+
+- **Colors**: primary action #246BD0; pet gradient #4B91EF→#2057BB; Outlook host #0874C9; semantic: due #C44747/#FDECEC, pending #B76E08/#FFF4DF, success #16845B/#E8F7F0, waiting #7556B5/#F1EDFA, DND gray #5D6B7D/#EEF1F5; lines #E4EAF1; text #172235 / secondary #718096.
+- **Type scale**: 19 page titles / 14 panel titles / 12 card titles / 11 buttons & links / 10 meta; Segoe UI + Microsoft YaHei.
+- **Spacing**: 4/8/12/16/22; **radius**: buttons 6, inputs 8, cards 9-10, menus 10, popup 14, pills full.
+- **Elevation**: e1 cards, e2 menus & tips, e3 popup (0 22 60 rgba(19,34,56,.2)).
+- **Accessibility**: dual-channel status; native button/input; Esc/Alt+P keyboard paths; `prefers`-style toggles (reduce motion); focus styles preserved.
+
+## 8. Requirement Mapping
+
+| Prototype capability | Requirement |
+| --- | --- |
+| Four stat groups in the popup + grid to five features + in-card actions | FR-02, FR-05 |
+| Highlight "why" chips, AI analysis + source-evidence anchoring | FR-03 |
+| Uncertain fields labeled "date to confirm / no clear date", never guessed | FR-04 |
+| Reminder invalidation after done, snooze never changes status, waiting-condition check times | FR-05, FR-06 |
+| Pet five states / click-panel / right-click menu / drag memory / tray / keyboard | FR-07 |
+| In-pane correction with three scopes, impact preview, rule enable/pause | FR-08, FR-09 |
+| Fixed test-set replay with hit display | FR-10 |
+| Add-in read-only consent, local data, sanitized-log statements | FR-01 (adapted), FR-11 |
+| Offline/model-failure fallback via manual task creation | FR-12 |
+
+## 9. Known Limitations & Real-implementation Notes
+
+- **Simulation scope**: mail list / bodies / sync are static demo data; reminders aren't really scheduled (toasts convey intent); mail bodies rendered as untrusted text (noted in the quote area).
+- **Real add-in**: Office.js doesn't support cross-pane floating layers — the pet and popup must live inside a task-pane/add-in page (the popup becomes an in-pane overlay); this prototype's state machine, hierarchy, sizing and flows map directly; mailbox access swaps the demo consent for Graph Mail.Read read-only.
+- **Dependencies**: Pointer Events (drag), localStorage (works under file://), CSS Grid; no external libraries or network requests.
+- **Version history**: v1.0 click-to-open-sidebar → v2.0 click-to-popup + five states/drag/tray + add-in consent → **v2.1 two-level grid interaction + compact mode + false-close/state-sync fixes**.
